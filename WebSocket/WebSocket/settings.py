@@ -29,6 +29,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'message_test.apps.MessageTestConfig',
-    'channels',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,12 @@ TEMPLATES = [
 
 # WSGI_APPLICATION = 'WebSocket.wsgi.application'
 ASGI_APPLICATION = 'WebSocket.asgi.application'
+
+CHANNELS_LAYERS = {
+  'default': {
+    'BACKEND': 'channels.layers.InMemoryChannelLayer'
+  }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
