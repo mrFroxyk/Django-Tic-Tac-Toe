@@ -11,9 +11,7 @@ from django.urls import include, path
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter
 from channels.routing import URLRouter
-# from ...WebSocket.message_test.urls import websocket_urlpatterns
-
-from .consumers import SimpleMessageConsumer
+from message_test.urls import websocket_urlpatterns
 import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'WebSocket.settings')
@@ -25,9 +23,7 @@ application = ProtocolTypeRouter(
         'http': django_asgi_application,
         'websocket': AuthMiddlewareStack(
             URLRouter([
-                path(r'ws', SimpleMessageConsumer.as_asgi(), name='ws'),
-                # path(r'ws2', include('message_test.routing'))
-                # 'ws/', include('message_test.urls')
+                *websocket_urlpatterns
             ])
         )
     }
