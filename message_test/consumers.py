@@ -16,5 +16,5 @@ class SimpleMessageConsumer(AsyncConsumer):
         })
         print("message!", text_data)
 
-    async def websocket_disconnect(self):
+    async def websocket_disconnect(self, event):
         pass
