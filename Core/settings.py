@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
-
+# AUTH_USER_MODEL = 'my_auth.models.'
 INSTALLED_APPS = [
     'daphne',
     'channels',
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'message_test.apps.MessageTestConfig',
     'chat.apps.ChatConfig',
     'online_user.apps.OnlineUserConfig',
+    'my_auth.apps.MyAuthConfig'
 ]
 
 MIDDLEWARE = [
@@ -94,16 +95,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.authentication_project.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.authentication_project.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.authentication_project.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.authentication_project.password_validation.NumericPasswordValidator',
     },
 ]
 
