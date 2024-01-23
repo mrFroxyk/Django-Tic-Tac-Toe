@@ -27,6 +27,8 @@
         <option value="$MODULE_DIR$/chat/templates/chat" />
         <option value="$MODULE_DIR$/message_test/templates" />
         <option value="$MODULE_DIR$/message_test/templates/message_test" />
+        <option value="$MODULE_DIR$/my_auth/templates/my_auth" />
+        <option value="$MODULE_DIR$/my_auth/templates" />
       </list>
     </option>
   </component>
