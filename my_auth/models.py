@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import User
 from django.db import models
 
-
 # class CustomUser(AbstractBaseUser, PermissionsMixin):
 #     email = models.EmailField(unique=True)
 #     is_active = models.BooleanField(default=True)

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'message_test.apps.MessageTestConfig',
     'chat.apps.ChatConfig',
     'online_user.apps.OnlineUserConfig',
+    'my_auth.apps.MyAuthConfig',
 ]
 
 MIDDLEWARE = [

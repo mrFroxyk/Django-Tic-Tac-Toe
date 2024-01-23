@@ -5,6 +5,9 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, BaseUserCreationForm
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
+from .logic import GlobalIDUserManager
+
+IDManager = GlobalIDUserManager()
 
 
 class AuthForm(AuthenticationForm):
@@ -27,10 +30,15 @@ class CustomLoginView(LoginView):
 
 
 def guest_login(request):
-    return HttpResponse('redirect to guest login')
+    if 'guest_id' in request.session:
+        guest_id = request.session['guest_id']
+    else:
+        guest_id = IDManager.get_id_for_new_guest()
+        request.session['guest_id'] = guest_id
+    return HttpResponse(f'redirect to guest login {guest_id}')
 # def login(request):
 #     if request.method == 'POST':
-#         form = AuthForm(request.POST)
+#         form = AuthForm(request.1POST)
 #         if form.is_valid():
 #             username = form.cleaned_data['username']
 #             password = form.cleaned_data['password']
