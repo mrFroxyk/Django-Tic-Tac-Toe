@@ -1,19 +1,13 @@
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render
+from django.contrib.auth import login
 from django.http import HttpResponse
-from django import forms
-from django.contrib.auth.forms import AuthenticationForm, BaseUserCreationForm
-from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from .logic import GlobalIDUserManager
+from .models import CustomUser
+from .forms import AuthForm
 
 IDManager = GlobalIDUserManager()
-
-
-class AuthForm(AuthenticationForm):
-    class Meta:
-        model = User
-        fields = ['username', 'password']
 
 
 class CustomLoginView(LoginView):
@@ -30,15 +24,13 @@ class CustomLoginView(LoginView):
 
 
 def guest_login(request):
-    if 'guest_id' in request.session:
-        guest_id = request.session['guest_id']
+    if request.user.is_authenticated:
+        return HttpResponse(f'You are authorization now, {request.user.username}')
     else:
         guest_id = IDManager.get_id_for_new_guest()
-        request.session['guest_id'] = guest_id
-    return HttpResponse(f'redirect to guest login {guest_id}')
-# def login(request):
-#     if request.method == 'POST':
-#         form = AuthForm(request.1POST)
-#         if form.is_valid():
-#             username = form.cleaned_data['username']
-#             password = form.cleaned_data['password']
+        guest_username = f'guest_{guest_id}'
+        guest_user = CustomUser.objects.create(username=guest_username, is_quest=True)
+        request.session.set_expiry(86400)
+        login(request, guest_user)
+        return HttpResponse(f'You were logged in under the nickname {request.user.username}')
+
