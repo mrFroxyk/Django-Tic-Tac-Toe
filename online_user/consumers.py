@@ -8,11 +8,19 @@ class OnlineUser(AsyncWebsocketConsumer):
     """
 
     async def connect(self):
+        # await self.channel_layer.group_send(
+        #     'all_chat',
+        #     {
+        #         'type':'chat.new_user'
+        #     }
+        # )
+
         await self.channel_layer.group_add(
             'all_chat',
             self.channel_name
         )
         await self.accept()
+        print(self.scope)
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
@@ -35,3 +43,6 @@ class OnlineUser(AsyncWebsocketConsumer):
             'type': 'websocket.message',
             'message': event['message']
         }))
+
+    async def chat_new_user(self, event):
+        ...

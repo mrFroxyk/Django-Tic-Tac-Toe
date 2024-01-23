@@ -29,6 +29,7 @@
         <option value="$MODULE_DIR$/message_test/templates/message_test" />
         <option value="$MODULE_DIR$/my_auth/templates/my_auth" />
         <option value="$MODULE_DIR$/my_auth/templates" />
+        <option value="$MODULE_DIR$/online_user/templates/online_user" />
       </list>
     </option>
   </component>

@@ -37,17 +37,6 @@ function sendMessage() {
             message: messageInput.value,
         }))
         messageInput.value = '';
-        // const messageDiv = document.createElement('div');
-        // messageDiv.className = 'message';
-        // messageDiv.textContent = messageInput.value;
-        //
-        // chat.appendChild(messageDiv);
-        //
-        // // Очищаем поле ввода
-        // messageInput.value = '';
-        //
-        // // Прокручиваем чат вниз, чтобы видеть последнее сообщение
-        // chat.scrollTop = chat.scrollHeight;
     }
 }
 
