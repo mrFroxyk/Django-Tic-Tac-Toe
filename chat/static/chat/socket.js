@@ -1,5 +1,5 @@
-// const socket = new WebSocket('ws://127.0.0.1:8000/online');
-const socket = new WebSocket('ws:/192.168.3.2:8000/online');
+const socket = new WebSocket('ws://127.0.0.1:8000/chat');
+// const socket = new WebSocket('ws:/192.168.3.2:8000/chat');
 socket.onopen = function (e) {
     socket.send(JSON.stringify({
         type: 'handshake',

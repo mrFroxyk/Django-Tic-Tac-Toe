@@ -24,7 +24,6 @@
     <option name="TEMPLATE_FOLDERS">
       <list>
         <option value="$MODULE_DIR$/chat/templates" />
-        <option value="$MODULE_DIR$/chat/templates/chat" />
         <option value="$MODULE_DIR$/message_test/templates" />
         <option value="$MODULE_DIR$/message_test/templates/message_test" />
         <option value="$MODULE_DIR$/online_user/templates/online_user" />
