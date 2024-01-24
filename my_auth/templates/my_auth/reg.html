@@ -16,11 +16,11 @@
     {{ form.as_p }}
     <button type="submit">Login</button>
 </form>
-{#{% if request.user.is_authenticated %}#}
-{#    <h4>Norm</h4>#}
-{#{% else %}#}
-{#    <h4>ne norm</h4>#}
-{#{% endif %}#}
+{% if request.user.is_authenticated %}
+    <h4>Norm, {{ user.username }}</h4>
+{% else %}
+    <h4>ne norm</h4>
+{% endif %}
 {#<p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>#}
 
 <a href="{% url 'guest_login' %}">Войти как гость?</a>
