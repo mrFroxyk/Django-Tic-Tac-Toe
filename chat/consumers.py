@@ -10,7 +10,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.channel_layer.group_add(
             'all_chat',
-            self.channel_name
+            self.channel_name,
         )
         await self.accept()
         print(self.scope)
