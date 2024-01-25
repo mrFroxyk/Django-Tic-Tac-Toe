@@ -11,6 +11,8 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter
 from channels.routing import URLRouter
 from message_test.urls import websocket_urlpatterns
+from online_user.urls import websocket_urlpatterns_online
+from game.urls import websocket_urlpatterns_game
 from chat.urls import websocket_urlpatterns_chat
 import os
 
@@ -21,7 +23,8 @@ application = ProtocolTypeRouter(
         'http': django_asgi_application,
         'websocket': AuthMiddlewareStack(
             URLRouter([
-                *websocket_urlpatterns, *websocket_urlpatterns_chat
+                *websocket_urlpatterns_game, *websocket_urlpatterns,
+                *websocket_urlpatterns_chat, *websocket_urlpatterns_online,
             ])
         )
     }

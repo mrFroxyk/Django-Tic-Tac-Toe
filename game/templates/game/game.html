@@ -1,0 +1,43 @@
+{#{% load static %}#}
+{#<!doctype html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport"#}
+{#          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">#}
+{#    <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
+{#    <title>Document</title>#}
+{#    <script src="{% static 'game/game.js' %}?v={{ random_number }}"> </script>#}
+{#</head>#}
+{#<body>#}
+{#hi#}
+{#{{ chat }}#}
+{#</body>#}
+{#</html>#}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат</title>
+    <link rel="stylesheet" href="{% static 'game/style.css' %}">
+    <script src="{% static 'game/game.js' %}?v={{ random_value }}"></script>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat" id="chat">
+        <!-- Чатовые сообщения будут отображаться здесь -->
+    </div>
+
+    <div class="input-container">
+        <input type="text" class="input-text" id="messageInput" placeholder="Введите текст сообщения">
+        <button class="send-button" onclick="sendMessage()">Отправить</button>
+    </div>
+</div>
+
+
+</body>
+</html>

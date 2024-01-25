@@ -22,5 +22,6 @@ urlpatterns = [
     path('test/', include('message_test.urls')),
     path('chat/', include('chat.urls')),
     path('auth/', include('my_auth.urls')),
-    path('online/', include('online_user.urls'))
+    path('online/', include('online_user.urls')),
+    path('game/', include('game.urls'))
 ]
