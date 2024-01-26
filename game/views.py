@@ -5,13 +5,13 @@ from chat.views import chat
 import secrets
 
 
-def game_lobby(request):
+def find_game(request):
     chat_template = chat(request)
     chat_template.render()
     context = {
         'chat': chat_template.rendered_content
     }
-    return render(request, 'game/game_lobby.html', context)
+    return render(request, 'game/find_game.html', context)
 
 
 def create_game(request):
@@ -22,7 +22,6 @@ def create_game(request):
     """
     room_code = secrets.token_hex(8)
 
-
     cache.set(
         room_code, {
             'player1': request.user.username,
@@ -31,16 +30,20 @@ def create_game(request):
             'is_end': False
         }
     )
-    return redirect(reverse('game', kwargs={'room_code': room_code}))
+    return redirect(reverse('game_lobby', kwargs={'room_code': room_code}))
 
 
-def game(request, room_code):
-
+def game_lobby(request, room_code):
     # chat_template = chat(request)
     # chat_template.render()
     # context = {
     #     'chat': chat_template.rendered_content
     # }
     context = {}
-    return render(request, 'game/game.html', context)
+    return render(request, 'game/game_lobby.html', context)
     # return HttpResponse(f"It's a {room_code} room")
+
+
+def game(request, room_code):
+    # TODO: check for game end
+    return render(request, 'game/game.html')
