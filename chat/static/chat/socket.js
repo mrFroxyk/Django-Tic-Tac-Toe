@@ -1,13 +1,13 @@
-const socket = new WebSocket('ws://127.0.0.1:8000/chat');
-// const socket = new WebSocket('ws:/192.168.3.2:8000/chat');
-socket.onopen = function (e) {
-    socket.send(JSON.stringify({
+const chat_socket = new WebSocket('ws://127.0.0.1:8000/chat');
+// const chat_socket = new WebSocket('ws:/192.168.3.2:8000/chat');
+chat_socket.onopen = function (e) {
+    chat_socket.send(JSON.stringify({
         type: 'handshake',
         message: 'Hello from Js client'
     }));
 };
 
-socket.onmessage = function (event) {
+chat_socket.onmessage = function (event) {
     try {
         const data = JSON.parse(event.data)
         if (data.type === 'websocket.message'){
@@ -32,7 +32,7 @@ function sendMessage() {
     const chat = document.getElementById('chat');
 
     if (messageInput.value.trim() !== '') {
-        socket.send(JSON.stringify({
+        chat_socket.send(JSON.stringify({
             type: 'message',
             message: messageInput.value,
         }))

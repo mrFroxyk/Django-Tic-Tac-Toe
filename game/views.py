@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import render, redirect, reverse
 from django.core.cache import cache
 from django.http import HttpResponse
@@ -17,17 +19,20 @@ def find_game(request):
 def create_game(request):
     """
     Middle function, who create game session in the cache and
-    redirected user to '/game/{room_code}'. He waits for second player after
+    redirected user to '/game/{room_code}/game'. He waits for second player after
     the game there
     """
-    room_code = secrets.token_hex(8)
-
+    # room_code = secrets.token_hex(8)
+    room_code = 'aboba'
     cache.set(
         room_code, {
             'player1': request.user.username,
             'player2': None,
-            'moves': '',
-            'is_end': False
+            'current_move': 'X',
+            'current_player': random.choice(['player1', 'player2']),
+            'border_to_render': [''] * 9,
+            'is_end': False,
+            'is_start': False,
         }
     )
     return redirect(reverse('game_lobby', kwargs={'room_code': room_code}))

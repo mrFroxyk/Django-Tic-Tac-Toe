@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import find_game, create_game, game_lobby, game
-from .consumers import GameLobby
+from .consumers import GameLobby, Game
 
 urlpatterns = [
     path('', find_game, name='find_game'),
@@ -10,5 +10,6 @@ urlpatterns = [
 ]
 
 websocket_urlpatterns_game = [
-    path('game', GameLobby.as_asgi(), name='game')
+    path('game_lobby', GameLobby.as_asgi(), name='game_lobby'),
+    path('game', Game.as_asgi(), name='game'),
 ]

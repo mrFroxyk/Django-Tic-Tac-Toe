@@ -1,15 +1,46 @@
-<!doctype html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Game</title>
-    script
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #square-container {
+            display: grid;
+            grid-template-columns: repeat(3, 200px);
+            grid-template-rows: repeat(3, 200px);
+            gap: 5px;
+        }
+
+        .square {
+            width: 100%;
+            height: 100%;
+            background-color: #96a0a2;
+            cursor: pointer;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    <title>Game with ...</title>
 </head>
 <body>
-tic toe tac
+
+<div id="square-container">
+    <!-- Контейнер для квадратов -->
+</div>
+
+<script src="{% static 'game/game.js' %}?v={{ random_value }}">
+</script>
 
 </body>
 </html>
