@@ -32,15 +32,14 @@
         }
     </style>
     <title>Game with ...</title>
+    <script defer src="{% static 'game/game.js' %}?v={{ random_value }}"></script>
 </head>
 <body>
-
+{{ request.user.username }}
 <div id="square-container">
     <!-- Контейнер для квадратов -->
 </div>
 
-<script src="{% static 'game/game.js' %}?v={{ random_value }}">
-</script>
 
 </body>
 </html>

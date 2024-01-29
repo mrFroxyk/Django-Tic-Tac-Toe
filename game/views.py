@@ -51,4 +51,4 @@ def game_lobby(request, room_code):
 
 def game(request, room_code):
     # TODO: check for game end
-    return render(request, 'game/game.html')
+    return render(request, 'game/game.html', {'request': request})

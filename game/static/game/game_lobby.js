@@ -1,4 +1,7 @@
+
+
 const game_socket = new WebSocket('ws://127.0.0.1:8000/game_lobby');
+
 // const socket = new WebSocket('ws:/192.168.3.2:8000/chat');
 game_socket.onopen = function (e) {
     game_socket.send(JSON.stringify({
@@ -23,9 +26,9 @@ game_socket.onmessage = function (event) {
             console.log('Message:', data.message);
         }
         if (data.type === 'websocket.redirect') {
+            game_socket.close()
             const currentURL = window.location.href;
             let segments = currentURL.split('/');
-            const room_code = segments[segments.length - 2]; //get room_code
             segments[segments.length - 1] = 'game';
             const resultUrl = segments.join('/')
             console.log('redirect:', resultUrl);

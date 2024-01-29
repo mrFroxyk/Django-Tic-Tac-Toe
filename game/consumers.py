@@ -52,6 +52,8 @@ class GameLobby(AsyncWebsocketConsumer):
                                 'message': 'second connected'
                             }
                         )
+                        room_data['player2'] = self.scope['user'].username
+                        cache.set(room_code, room_data)
                         await self.channel_layer.group_send(
                             room_code,
                             {
@@ -81,36 +83,37 @@ class Game(AsyncWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(args, kwargs)
-        self.enemy_username = None
+        self.enemy_user_num = None
         self.username = None
         self.user_num = None
         self.room_code = None
 
     async def connect(self):
-        self.username = self.scope['user'].username
-        
         await self.accept()
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
             response = json.loads(text_data)
-            # print(response)
+            print(response)
+            print(self.scope['user'], self.scope['user'].username)
             match response['type']:
                 case 'join':
                     self.room_code = response['room_code']
-                    username = self.scope['user'].username
-                    room_data = cache.get(self.room_code)
-                    if username == room_data['player1']:
-                        self.user_num = 'player1'
-                        self.enemy_username = 'player2'
-                    elif username == room_data['player2']:
-                        self.user_num = 'player2'
-                        self.enemy_username = 'player1'
-
                     await self.channel_layer.group_add(
                         self.room_code,
                         self.channel_name
                     )
+                    username = self.scope['user'].username
+                    # Хули блять ты не работаешь
+                    room_data = cache.get(self.room_code)
+                    # print(username, room_data['player1'], room_data['player2'])
+                    if username == room_data['player1']:
+                        self.user_num = 'player1'
+                        self.enemy_user_num = 'player2'
+                    elif username == room_data['player2']:
+                        self.user_num = 'player2'
+                        self.enemy_user_num = 'player1'
+
                     border_to_render = room_data['border_to_render']
                     await self.channel_layer.group_send(
                         self.room_code,
@@ -122,11 +125,11 @@ class Game(AsyncWebsocketConsumer):
 
                 case 'move':
                     game_data = cache.get(self.room_code)
-                    print(game_data)
-                    # if self.username != game_data['current_player']:
-                    #     return
+                    print(self.user_num, game_data['current_player'])
+                    if self.user_num != game_data['current_player']:
+                        return
                     move_id = int(response['position'])
-                    
+
                     border_to_render = game_data['border_to_render']
                     current_move = game_data['current_move']
                     if border_to_render[move_id] == '':
