@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Game Title</title>
+    <link rel="stylesheet" href="{% static 'my_auth/base.css' %}">
+
+    {% block meta_data %}{% endblock meta_data %}
+</head>
+<body>
+
+
+<div class="nav_panel">
+    <div class="nav_panel__container">
+        <a href="#">Home</a>
+        <a href="#">Fast game</a>
+        <a href="#">Local game</a>
+        <a href="#">Friendly game</a>
+    </div>
+
+    <div class="user-menu">
+        <p>{{ request.user.username }}</p>
+        <!-- Здесь вы можете добавить другие элементы меню для пользователя -->
+    </div>
+</div>
+
+{% block content %}{% endblock content %}
+
+</body>
+</html>

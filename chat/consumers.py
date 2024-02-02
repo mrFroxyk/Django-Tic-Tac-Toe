@@ -13,7 +13,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
         await self.accept()
-        print(self.scope)
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:

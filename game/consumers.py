@@ -89,13 +89,13 @@ class Game(AsyncWebsocketConsumer):
         self.room_code = None
 
     async def connect(self):
+        self.username = self.scope['user'].username
         await self.accept()
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
             response = json.loads(text_data)
             print(response)
-            print(self.scope['user'], self.scope['user'].username)
             match response['type']:
                 case 'join':
                     self.room_code = response['room_code']
@@ -103,14 +103,11 @@ class Game(AsyncWebsocketConsumer):
                         self.room_code,
                         self.channel_name
                     )
-                    username = self.scope['user'].username
-                    # Хули блять ты не работаешь
                     room_data = cache.get(self.room_code)
-                    # print(username, room_data['player1'], room_data['player2'])
-                    if username == room_data['player1']:
+                    if self.username == room_data['player1']:
                         self.user_num = 'player1'
                         self.enemy_user_num = 'player2'
-                    elif username == room_data['player2']:
+                    elif self.username == room_data['player2']:
                         self.user_num = 'player2'
                         self.enemy_user_num = 'player1'
 
@@ -119,7 +116,10 @@ class Game(AsyncWebsocketConsumer):
                         self.room_code,
                         {
                             'type': 'game.move',
-                            'border_to_render': border_to_render
+                            'border_to_render': border_to_render,
+                            'player1': room_data['player1'],
+                            'player2': room_data['player2'],
+                            'current_player': room_data['current_player']
                         }
                     )
 
@@ -138,13 +138,15 @@ class Game(AsyncWebsocketConsumer):
                             self.room_code,
                             {
                                 'type': 'game.move',
-                                'border_to_render': border_to_render
+                                'border_to_render': border_to_render,
+                                'current_player': game_data['current_player']
                             }
                         )
                         if current_move == 'X':
                             current_move = 'O'
                         else:
                             current_move = 'X'
+                        game_data['current_player'] = self.enemy_user_num
                         game_data['current_move'] = current_move
                         game_data['border_to_render'] = border_to_render
                         print(game_data)

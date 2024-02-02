@@ -39,11 +39,6 @@ def create_game(request):
 
 
 def game_lobby(request, room_code):
-    # chat_template = chat(request)
-    # chat_template.render()
-    # context = {
-    #     'chat': chat_template.rendered_content
-    # }
     context = {}
     return render(request, 'game/game_lobby.html', context)
     # return HttpResponse(f"It's a {room_code} room")
@@ -51,4 +46,10 @@ def game_lobby(request, room_code):
 
 def game(request, room_code):
     # TODO: check for game end
-    return render(request, 'game/game.html', {'request': request})
+    chat_template = chat(request)
+    chat_template.render()
+    context = {
+        'chat': chat_template.rendered_content,
+        'request': request
+    }
+    return render(request, 'game/game.html', context)

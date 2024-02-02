@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'my_auth.middleware.AuthCheckerMiddleware',
 ]
 
 ROOT_URLCONF = 'Core.urls'
@@ -143,3 +144,19 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'my_auth.CustomUser'
+
+
+# DELETE IT
+from django.core.cache import cache
+room_code = 'aboba' # DELETE IT
+cache.set(
+    room_code, {
+        'player1': 'admin',
+        'player2': 'guest_18',
+        'current_move': 'X',
+        'current_player': 'player1',
+        'border_to_render': [''] * 9,
+        'is_end': False,
+        'is_start': False,
+    }
+)
