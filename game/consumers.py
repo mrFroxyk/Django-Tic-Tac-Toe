@@ -1,7 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
-from django.urls import reverse
-from urllib.parse import parse_qs
 import json
 
 

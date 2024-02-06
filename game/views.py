@@ -22,8 +22,8 @@ def create_game(request):
     redirected user to '/game/{room_code}/game'. He waits for second player after
     the game there
     """
-    # room_code = secrets.token_hex(8)
-    room_code = 'aboba'
+    room_code = secrets.token_hex(8)
+    # room_code = 'aboba'
     cache.set(
         room_code, {
             'player1': request.user.username,
@@ -35,13 +35,19 @@ def create_game(request):
             'is_start': False,
         }
     )
-    return redirect(reverse('game_lobby', kwargs={'room_code': room_code}))
+    return redirect(reverse('game:game_lobby', kwargs={'room_code': room_code}))
 
 
 def game_lobby(request, room_code):
-    context = {}
+    # TODO: integrate chat in structure
+    chat_template = chat(request)
+    chat_template.render()
+    context = {
+        'chat': chat_template.rendered_content,
+        'request': request,
+        'url': request.build_absolute_uri(),
+    }
     return render(request, 'game/game_lobby.html', context)
-    # return HttpResponse(f"It's a {room_code} room")
 
 
 def game(request, room_code):

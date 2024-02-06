@@ -1,6 +1,5 @@
-
-
 const game_socket = new WebSocket('ws://127.0.0.1:8000/game_lobby');
+// const game_socket = new WebSocket('ws://192.168.3.2:8000/game_lobby');
 
 // const socket = new WebSocket('ws:/192.168.3.2:8000/chat');
 game_socket.onopen = function (e) {
@@ -38,6 +37,26 @@ game_socket.onmessage = function (event) {
         console.log('Error:', e.message);
     }
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+    const url_button = document.querySelector('.copywriter_url')
+    const green_message = document.querySelector('.copywriter_alright-window')
+    green_message.style.opacity = 0
+    console.log(url_button)
+    let isCopied = false
+    url_button.addEventListener('click', () => {
+        console.log("fff")
+        navigator.clipboard.writeText(url_button.textContent);
+        if (!isCopied) {
+            green_message.style.opacity = 1
+            isCopied = true
+            setTimeout(() => {
+                isCopied = false
+                green_message.style.opacity = 0
+            }, 4000)
+        }
+    })
+});
 
 
 

@@ -3,18 +3,22 @@ body {
     margin: 0;
     padding: 0;
 }
-
+.content{
+    background-color: bisque;
+    min-height: 80vh;
+}
 header {
-    background-color: #333;
+    background-color: #412504;
     color: #fff;
     padding: 10px;
     text-align: center;
 }
 
 .nav_panel {
-    background-color: #444;
-    color: #fff;
+    background-color: #412504;
+    color: #a69c9c;
     padding: 10px;
+    font-size: 28px;
     display: flex;
     justify-content: space-between;
 }

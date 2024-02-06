@@ -1,34 +1,42 @@
-{#{% load static %}#}
-{#<!doctype html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport"#}
-{#          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">#}
-{#    <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
-{#    <title>Document</title>#}
-{#    <script src="{% static 'game/game_lobby.js' %}?v={{ random_number }}"> </script>#}
-{#</head>#}
-{#<body>#}
-{#hi#}
-{#{{ chat }}#}
-{#</body>#}
-{#</html>#}
-
+{% extends 'my_auth/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Чат</title>
-    <link rel="stylesheet" href="{% static 'game/style.css' %}">
+
+
+{% block meta_data %}
     <script src="{% static 'game/game_lobby.js' %}?v={{ random_value }}"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="{% static 'game/game_lobby.css' %}">
+
+{% endblock meta_data %}
+
+{% block content %}
+    <div class="wrapper">
+        <div class="copywriter">
+            <div class="copywriter_container">
+                <div class="copywriter_title">
+                    Copy the link to your game and share it with your friend
+                </div>
+                <div class="copywriter_url-container">
+                    <div class="copywriter_url-wrapper">
+
+                        <div class="copywriter_url">
+                            {{ url }}
+                        </div>
+                        <div class="copywriter_alright-window">
+                            Copied
+                        </div>
+                    </div>
+
+                </div>
+                <div class="copywriter_chat-container">
+                    {{ chat }}
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
+{% endblock content %}
 
-</body>
-</html>
+
+

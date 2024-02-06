@@ -17,7 +17,7 @@
         <a href="#">Home</a>
         <a href="#">Fast game</a>
         <a href="#">Local game</a>
-        <a href="#">Friendly game</a>
+        <a href="{% url 'game:create_game' %}">Friendly game</a>
     </div>
 
     <div class="user-menu">
@@ -26,7 +26,10 @@
     </div>
 </div>
 
-{% block content %}{% endblock content %}
+<div class="content">
+    {% block content %}{% endblock content %}
+</div>
+
 
 </body>
 </html>

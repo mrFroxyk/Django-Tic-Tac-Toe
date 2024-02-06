@@ -1,4 +1,5 @@
 const chat_socket = new WebSocket('ws://127.0.0.1:8000/chat');
+// const chat_socket = new WebSocket('ws://192.168.3.2:8000/chat');
 // const chat_socket = new WebSocket('ws:/192.168.3.2:8000/chat');
 chat_socket.onopen = function (e) {
     chat_socket.send(JSON.stringify({

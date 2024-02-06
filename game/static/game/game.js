@@ -28,6 +28,7 @@ function renderValues(values) {
 
 
 const socket = new WebSocket('ws://127.0.0.1:8000/game')
+// const socket = new WebSocket('ws://192.168.3.2:8000/game')
 socket.onopen = function (event) {
     socket.send(
         JSON.stringify(
