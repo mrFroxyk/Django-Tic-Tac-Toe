@@ -1,19 +1,37 @@
 {% extends 'my_auth/base.html' %}
 {% load static %}
 {% block meta_data %}
-    <link rel="stylesheet" href="{% static 'game/game_style.css' %}">
+    <link rel="stylesheet" href="{% static 'game/game_style.css' %}?v=1.1">
     <title>Game with ...</title>
-    <script></script>
-    <script defer src="{% static 'game/game.js' %}?v={{ random_value }}"></script>
+    <script defer src="{% static 'game/game.js' %}?v=1.1"></script>
 {% endblock meta_data %}
 
 {% block content %}
     <div class="wrapper">
-        <div id="square-container">
-            <!-- Контейнер для квадратов -->
+        <div class="game_board">
+            <div id="square-container">
+                <!-- Контейнер для квадратов -->
+            </div>
+            <div class="game-info">
+                <div class="game-info_player">
+                    <div class="game-info_name">
+                        admin
+                    </div>
+                    <div class="game-info_time" id="player1_time">
+                        05:00
+                    </div>
+                </div>
+                <div class="game-info_player">
+                    <div class="game-info_name">
+                        gay
+                    </div>
+                    <div class="game-info_time" id="player2_time">
+                        05:00
+                    </div>
+                </div>
+            </div>
         </div>
         {{ chat }}
     </div>
-
 
 {% endblock content %}

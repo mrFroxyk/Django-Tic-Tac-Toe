@@ -1,10 +1,8 @@
-import random
-
 from django.shortcuts import render, redirect, reverse
 from django.core.cache import cache
-from django.http import HttpResponse
 from chat.views import chat
 import secrets
+import random
 
 
 def find_game(request):
@@ -26,6 +24,7 @@ def create_game(request):
     # room_code = 'aboba'
     cache.set(
         room_code, {
+            'type': 'game.move',
             'player1': request.user.username,
             'player2': None,
             'current_move': 'X',
@@ -33,6 +32,9 @@ def create_game(request):
             'border_to_render': [''] * 9,
             'is_end': False,
             'is_start': False,
+            'player1_time': 120,
+            'player2_time': 120,
+            'time_last_action': 0,
         }
     )
     return redirect(reverse('game:game_lobby', kwargs={'room_code': room_code}))

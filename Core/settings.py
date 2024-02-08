@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-&epja2r1sc_l-1tgc@avry5kfvdct+8s=a_8k+sy-1_q6s*2iq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.3.2', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.3.2', '127.0.0.1', '10.30.225.191']
 
 # Application definition
 
@@ -145,18 +145,23 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'my_auth.CustomUser'
 
-
-# DELETE IT
-from django.core.cache import cache
-room_code = 'aboba' # DELETE IT
-cache.set(
-    room_code, {
-        'player1': 'admin',
-        'player2': 'guest_18',
-        'current_move': 'X',
-        'current_player': 'player1',
-        'border_to_render': [''] * 9,
-        'is_end': False,
-        'is_start': False,
-    }
-)
+# # DELETE IT
+# from django.core.cache import cache
+# import datetime
+# import time
+# room_code = 'aboba'  # DELETE IT
+# cache.set(
+#     room_code, {
+#         'type': 'game.move',
+#         'player1': 'admin',
+#         'player2': 'guest_24',
+#         'current_move': 'X',
+#         'current_player': 'player1',
+#         'border_to_render': [''] * 9,
+#         'is_end': False,
+#         'is_start': False,
+#         'player1_time': 120,
+#         'player2_time': 120,
+#         'time_last_action': int(time.time()),
+#     }
+# )
