@@ -1,9 +1,9 @@
 {% extends 'my_auth/base.html' %}
 {% load static %}
 {% block meta_data %}
-    <link rel="stylesheet" href="{% static 'game/game_style.css' %}">
+    <link rel="stylesheet" href="{% static 'game/css/game.css' %}">
     <title>Game with ...</title>
-    <script defer src="{% static 'game/game.js' %}?v={{ random_value }}"></script>
+    <script defer src="{% static 'game/js/game.js' %}?v={{ random_value }}"></script>
 {% endblock meta_data %}
 
 {% block content %}

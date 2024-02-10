@@ -1,37 +1,55 @@
 {% extends 'my_auth/base.html' %}
 {% load static %}
 {% block meta_data %}
-    <link rel="stylesheet" href="{% static 'game/game_style.css' %}?v=1.1">
+    <link rel="stylesheet" href="{% static 'game/css/game.css' %}?v=1.1">
     <title>Game with ...</title>
-    <script defer src="{% static 'game/game.js' %}?v=1.1"></script>
+    <script defer src="{% static 'game/js/game.js' %}?v=1.1"></script>
+    <style>
+    .content{
+        background-image: url("{% static 'game/img/fon.png' %}");
+    }
+    </style>
+
 {% endblock meta_data %}
 
 {% block content %}
-    <div class="wrapper">
-        <div class="game_board">
-            <div id="square-container">
-                <!-- Контейнер для квадратов -->
+    <div class="game">
+        <div class="game-info">
+            <div class="game-info__time" id="player1_time">
+                02:00
             </div>
-            <div class="game-info">
-                <div class="game-info_player">
-                    <div class="game-info_name">
-                        admin
-                    </div>
-                    <div class="game-info_time" id="player1_time">
-                        05:00
-                    </div>
-                </div>
-                <div class="game-info_player">
-                    <div class="game-info_name">
-                        gay
-                    </div>
-                    <div class="game-info_time" id="player2_time">
-                        05:00
-                    </div>
-                </div>
+            <div class="game-info__nick" id="player1_nick">
+                Admin
+            </div>
+            <div class="game-info__time" id="player2_time">
+                02:00
+            </div>
+            <div class="game-info__nick" id="player2_nick">
+                Gaymer
             </div>
         </div>
-        {{ chat }}
-    </div>
+        <div class="game-board" id="game-board">
+{#            <div class="game-board__squared" id="1"></div>#}
+{#            <div class="game-board__squared" id="2"></div>#}
+{#            <div class="game-board__squared" id="3"></div>#}
+{#            <div class="game-board__squared" id="4"></div>#}
+{#            <div class="game-board__squared" id="5"></div>#}
+{#            <div class="game-board__squared" id="6"></div>#}
+{#            <div class="game-board__squared" id="7"></div>#}
+{#            <div class="game-board__squared" id="8"></div>#}
+{#            <div class="game-board__squared" id="9"></div>#}
+        </div>
+        <div class="chat">
+            <div class="chat__history">
 
+            </div>
+            <div class="chat__send-message">
+                <label>
+                    <input class="chat__input" type="text" placeholder="Type your message...">
+                </label>
+                <img class="chat__seng-ico" src="{% static 'game/img/send.png' %}" alt="send">
+
+            </div>
+        </div>
+    </div>
 {% endblock content %}

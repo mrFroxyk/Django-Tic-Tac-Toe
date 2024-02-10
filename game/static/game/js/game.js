@@ -10,17 +10,18 @@ function handleClick(event) {
 }
 
 // create tic tac toe board
-const container = document.getElementById('square-container')
+const container = document.getElementById('game-board')
 for (let i = 0; i < 9; i++) {
     const square = document.createElement('div')
     square.addEventListener('click', handleClick)
-    square.classList.add('square')
+    square.classList.add('game-board__squared')
     square.id = `${i}`
     container.appendChild(square)
 }
 
 function renderValues(values) {
-    const squares = document.querySelectorAll('.square')
+    const squares = document.querySelectorAll('.game-board__squared')
+    console.log(values)
     squares.forEach((square, index) => {
         square.textContent = values[index]
     })
@@ -77,8 +78,8 @@ socket.onmessage = function (event) {
                     renderTime(player1_time, time_player1);
                     --time_player1;
                 }, 1000)
-                player1_time.style.backgroundColor = '#ca8d51'
-                player2_time.style.backgroundColor = '#e4cbad'
+                player1_time.style.backgroundColor = '#9DFF09'
+                player2_time.style.backgroundColor = '#D7E02A'
                 break;
             case 'player2':
                 --time_player2;
@@ -89,8 +90,8 @@ socket.onmessage = function (event) {
                     renderTime(player2_time, time_player2);
                     --time_player2;
                 }, 1000)
-                player2_time.style.backgroundColor = '#ca8d51'
-                player1_time.style.backgroundColor = '#e4cbad'
+                player2_time.style.backgroundColor = '#9DFF09'
+                player1_time.style.backgroundColor = '#D7E02A'
                 break;
         }
     } catch (e) {

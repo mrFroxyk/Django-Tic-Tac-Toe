@@ -1,0 +1,108 @@
+.content {
+    display: flex;
+    align-items: center;
+}
+
+.game {
+    margin: auto;
+    /*background-image: url("fon.png");*/
+    display: grid;
+    grid-template-columns: 1fr 560px 1fr;
+}
+
+.game-info {
+    align-self: center;
+    justify-self: end;
+    width: 360px;
+    height: 360px;
+    background: rgb(29, 24, 31);
+    border-radius: 20% 0 20% 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.game-info__time {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 100px;
+    background: #9DFF09;
+    border-radius: 20% 0 20% 0;
+}
+
+#player2_time {
+    background: #D7E02A;
+    align-self: end;
+}
+
+.game-info__nick {
+    font-family: Dosis;
+    color: #FFFFFF;
+    font-size: 1.88rem;
+}
+
+#player1_nick {
+    align-self: center;
+    position: relative;
+    bottom: 25%;
+}
+
+#player2_nick {
+    position: relative;
+    align-self: center;
+    top: 25%;
+}
+
+.game-board {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.game-board__squared {
+    font-size: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px;
+    width: 175px;
+    height: 175px;
+    background: linear-gradient(180.00deg, rgba(0, 253, 255, 0.42), rgba(31, 202, 204, 0) 100%);
+}
+
+.chat {
+    border-radius: 20% 0 20% 0 ;
+    width: 360px;
+    height: 360px;
+    background: #1D181F;
+    display: grid;
+    grid-template-rows: 1fr 60px;
+    align-self: center;
+    justify-self: start;
+}
+
+.chat__history {
+
+}
+
+.chat__input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    margin-left: 10px;
+}
+.chat__send-message{
+    display: flex;
+    align-items: center;
+    border-top: #4b4444 1px solid;
+
+}
+.chat__seng-ico{
+    opacity: 1;
+    width: 58px;
+    height: 58px;
+    cursor: pointer;
+}

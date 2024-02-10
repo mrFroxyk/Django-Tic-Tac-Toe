@@ -1,35 +1,55 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Game Title</title>
-    <link rel="stylesheet" href="{% static 'my_auth/base.css' %}">
-
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'my_auth/css/base.css' %}?v=1.1">
+    <title>Document</title>
     {% block meta_data %}{% endblock meta_data %}
 </head>
 <body>
+<nav class="nav">
+    <a href="#"><img class="nav__logo" src="{% static 'my_auth/img/logo.png' %}" alt="logo"></a>
+    <div class="nav__bar">
+        <a href="#">
+            <div class="nav__menu-item">
+                Local game
+            </div>
+        </a>
+        <a href="#">
+            <div class="nav__menu-item">
+                Fast game
+            </div>
+        </a>
+        <a href="{% url 'game:create_game' %}">
+            <div class="nav__menu-item">
+                Playing with a friend
+            </div>
+        </a>
+        <a href="#">
+            <div class="nav__menu-item">
+                Playing with a bot
+            </div>
+        </a>
 
-
-<div class="nav_panel">
-    <div class="nav_panel__container">
-        <a href="#">Home</a>
-        <a href="#">Fast game</a>
-        <a href="#">Local game</a>
-        <a href="{% url 'game:create_game' %}">Friendly game</a>
     </div>
+    <div class="user">
+        <div class="user__ava">
 
-    <div class="user-menu">
-        <p>{{ request.user.username }}</p>
-        <!-- Здесь вы можете добавить другие элементы меню для пользователя -->
+        </div>
+        <div class="user__nickname">
+            Admin
+        </div>
     </div>
-</div>
-
+</nav>
 <div class="content">
     {% block content %}{% endblock content %}
 </div>
+<footer class="footer">
 
-
+</footer>
 </body>
 </html>
