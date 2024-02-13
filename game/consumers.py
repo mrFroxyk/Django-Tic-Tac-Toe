@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
+import asyncio
 import json
 import time
 
@@ -81,35 +82,21 @@ class Game(AsyncWebsocketConsumer):
     Consumer for game
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.enemy_user_num = None
-        self.username = None
-        self.user_num = None
-        self.room_code = None
-
     async def connect(self):
-        self.username = self.scope['user'].username
         await self.accept()
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
             response = json.loads(text_data)
             print(response)
+            room_code = response['room_code']
             match response['type']:
                 case 'join':
-                    self.room_code = response['room_code']
                     await self.channel_layer.group_add(
-                        self.room_code,
+                        room_code,
                         self.channel_name
                     )
-                    room_data = cache.get(self.room_code)
-                    if self.username == room_data['player1']:
-                        self.user_num = 'player1'
-                        self.enemy_user_num = 'player2'
-                    elif self.username == room_data['player2']:
-                        self.user_num = 'player2'
-                        self.enemy_user_num = 'player1'
+                    room_data = cache.get(room_code)
 
                     # Correct the time of move if a connection occurs between moves
                     time_delta = int(time.time()) - room_data['time_last_action']
@@ -123,17 +110,25 @@ class Game(AsyncWebsocketConsumer):
                     )
 
                 case 'move':
-                    room_data = cache.get(self.room_code)
+                    room_data = cache.get(room_code)
+                    username = self.scope['user'].username
 
-                    if self.user_num != room_data['current_player']:
+                    if username != room_data[room_data['current_player']]:
                         return
+
+                    if username == room_data['player1']:
+                        user_num = 'player1'
+                        enemy_user_num = 'player2'
+                    if username == room_data['player2']:
+                        user_num = 'player2'
+                        enemy_user_num = 'player1'
+
                     move_id = int(response['position'])
                     border_to_render = room_data['border_to_render']
                     current_move = room_data['current_move']
                     if border_to_render[move_id] == '':
                         border_to_render[move_id] = current_move
-                        room_data['current_player'] = self.enemy_user_num
-                        current_time = int(time.time())
+                        room_data['current_player'] = enemy_user_num
                         time_delta = int(time.time()) - room_data['time_last_action']
                         room_data['time_last_action'] = int(time.time())
                         match room_data['current_player']:
@@ -143,7 +138,7 @@ class Game(AsyncWebsocketConsumer):
                                 room_data['player1_time'] -= time_delta
 
                         await self.channel_layer.group_send(
-                            self.room_code, room_data
+                            room_code, room_data
                         )
                         if current_move == 'X':
                             current_move = 'O'
@@ -152,7 +147,7 @@ class Game(AsyncWebsocketConsumer):
 
                         room_data['current_move'] = current_move
                         room_data['border_to_render'] = border_to_render
-                        cache.set(self.room_code, room_data)
+                        cache.set(room_code, room_data)
 
     async def disconnect(self, code):
         ...
@@ -160,3 +155,8 @@ class Game(AsyncWebsocketConsumer):
     async def game_move(self, event):
         event['type'] = 'websocket.render'
         await self.send(text_data=json.dumps(event))
+
+    @staticmethod
+    async def check_end(second):
+        await asyncio.sleep(second)
+        print("task completed")

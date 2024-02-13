@@ -1,8 +1,14 @@
+const currentURL = window.location.href
+let segment = currentURL.split('/')
+const room_code = segment [segment.length - 2]
+
+// from http://127.0.0.1:8000/game/8f794f32eeba8593/game get 8f794f32eeba8593
 function handleClick(event) {
     socket.send(
         JSON.stringify(
             {
                 type: 'move',
+                room_code: room_code,
                 position: event.target.id,
             }
         )
@@ -32,10 +38,6 @@ const socket = new WebSocket('ws://127.0.0.1:8000/game')
 // const socket = new WebSocket('ws://192.168.3.2:8000/game')
 // const socket = new WebSocket('ws://10.30.225.191:8000/game')
 socket.onopen = function (event) {
-    const currentURL = window.location.href
-    let segment = currentURL.split('/')
-    const room_code = segment [segment.length - 2]
-
     socket.send(
         JSON.stringify(
             {
