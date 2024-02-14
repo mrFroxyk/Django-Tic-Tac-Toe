@@ -5,9 +5,9 @@
     <title>Game with ...</title>
     <script defer src="{% static 'game/js/game.js' %}?v=1.1"></script>
     <style>
-    .content{
-        background-image: url("{% static 'game/img/fon.png' %}");
-    }
+        .content {
+            background-image: url("{% static 'game/img/fon.png' %}");
+        }
     </style>
 
 {% endblock meta_data %}
@@ -21,6 +21,9 @@
             <div class="game-info__nick" id="player1_nick">
                 Admin
             </div>
+            <div class="game__status">
+                Admin (X) is moving
+            </div>
             <div class="game-info__time" id="player2_time">
                 02:00
             </div>
@@ -29,15 +32,15 @@
             </div>
         </div>
         <div class="game-board" id="game-board">
-{#            <div class="game-board__squared" id="1"></div>#}
-{#            <div class="game-board__squared" id="2"></div>#}
-{#            <div class="game-board__squared" id="3"></div>#}
-{#            <div class="game-board__squared" id="4"></div>#}
-{#            <div class="game-board__squared" id="5"></div>#}
-{#            <div class="game-board__squared" id="6"></div>#}
-{#            <div class="game-board__squared" id="7"></div>#}
-{#            <div class="game-board__squared" id="8"></div>#}
-{#            <div class="game-board__squared" id="9"></div>#}
+            {#            <div class="game-board__squared" id="1"></div>#}
+            {#            <div class="game-board__squared" id="2"></div>#}
+            {#            <div class="game-board__squared" id="3"></div>#}
+            {#            <div class="game-board__squared" id="4"></div>#}
+            {#            <div class="game-board__squared" id="5"></div>#}
+            {#            <div class="game-board__squared" id="6"></div>#}
+            {#            <div class="game-board__squared" id="7"></div>#}
+            {#            <div class="game-board__squared" id="8"></div>#}
+            {#            <div class="game-board__squared" id="9"></div>#}
         </div>
         <div class="chat">
             <div class="chat__history">

@@ -30,6 +30,7 @@ def create_game(request):
             'current_move': 'X',
             'current_player': random.choice(['player1', 'player2']),
             'border_to_render': [''] * 9,
+            'status': 'wait for game',
             'is_end': False,
             'is_start': False,
             'player1_time': 120,

@@ -25,7 +25,7 @@ for (let i = 0; i < 9; i++) {
     container.appendChild(square)
 }
 
-function renderValues(values) {
+function renderBoardDom(values) {
     const squares = document.querySelectorAll('.game-board__squared')
     console.log(values)
     squares.forEach((square, index) => {
@@ -56,51 +56,59 @@ let time_player2 = 0
 socket.onmessage = function (event) {
     try {
         const data = JSON.parse(event.data)
-        const border_to_render = data.border_to_render
         console.log(data)
-        let temp_time_player1 = parseInt(data['player1_time'])
-        let temp_time_player2 = parseInt(data['player2_time'])
-        if (Math.abs(time_player1 - temp_time_player1) > 1) {
-            time_player1 = temp_time_player1
-        }
-        if (Math.abs(time_player2 - temp_time_player2) > 1) {
-            time_player2 = temp_time_player2
-        }
-        renderValues(border_to_render)
-        let current_player = data['current_player']
-        player1_time.textContent = getParsedTime(time_player1)
-        player2_time.textContent = getParsedTime(time_player2)
-        switch (current_player) {
-            case 'player1':
-                --time_player1;
-                if (currentCuratine) {
-                    clearInterval(currentCuratine)
-                }
-                currentCuratine = setInterval(() => {
-                    renderTime(player1_time, time_player1);
-                    --time_player1;
-                }, 1000)
-                player1_time.style.backgroundColor = '#9DFF09'
-                player2_time.style.backgroundColor = '#D7E02A'
-                break;
-            case 'player2':
-                --time_player2;
-                if (currentCuratine) {
-                    clearInterval(currentCuratine)
-                }
-                currentCuratine = setInterval(() => {
-                    renderTime(player2_time, time_player2);
-                    --time_player2;
-                }, 1000)
-                player2_time.style.backgroundColor = '#9DFF09'
-                player1_time.style.backgroundColor = '#D7E02A'
-                break;
-        }
+        const border_to_render = data.border_to_render
+        renderBoardDom(border_to_render)
+
+        const status = document.querySelector(".game__status")
+        status.textContent = data['status']
+
+        renderTimeInDom(data)
+
     } catch (e) {
         console.log(`Error ${e}`)
     }
 }
 
+function renderTimeInDom(data) {
+    let current_player = data['current_player']
+    let temp_time_player1 = parseInt(data['player1_time'])
+    let temp_time_player2 = parseInt(data['player2_time'])
+    if (Math.abs(time_player1 - temp_time_player1) > 1) {
+        time_player1 = temp_time_player1
+    }
+    if (Math.abs(time_player2 - temp_time_player2) > 1) {
+        time_player2 = temp_time_player2
+    }
+    player1_time.textContent = getParsedTime(time_player1)
+    player2_time.textContent = getParsedTime(time_player2)
+    switch (current_player) {
+        case 'player1':
+            --time_player1;
+            if (currentCuratine) {
+                clearInterval(currentCuratine)
+            }
+            currentCuratine = setInterval(() => {
+                renderTime(player1_time, time_player1);
+                --time_player1;
+            }, 1000)
+            player1_time.style.backgroundColor = '#9DFF09'
+            player2_time.style.backgroundColor = '#D7E02A'
+            break;
+        case 'player2':
+            --time_player2;
+            if (currentCuratine) {
+                clearInterval(currentCuratine)
+            }
+            currentCuratine = setInterval(() => {
+                renderTime(player2_time, time_player2);
+                --time_player2;
+            }, 1000)
+            player2_time.style.backgroundColor = '#9DFF09'
+            player1_time.style.backgroundColor = '#D7E02A'
+            break;
+    }
+}
 
 function renderTime(element, startTime) {
     startTime = getParsedTime(startTime)
