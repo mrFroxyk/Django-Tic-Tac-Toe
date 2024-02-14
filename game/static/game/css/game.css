@@ -71,6 +71,14 @@
     height: 175px;
     background: linear-gradient(180.00deg, rgba(0, 253, 255, 0.42), rgba(31, 202, 204, 0) 100%);
 }
+.game__status{
+    color: #FFFFFF;
+    grid-column-start: 1;
+    grid-column-end:3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .chat {
     border-radius: 20% 0 20% 0 ;

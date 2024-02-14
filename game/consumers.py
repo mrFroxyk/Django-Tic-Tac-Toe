@@ -60,6 +60,11 @@ class GameLobby(AsyncWebsocketConsumer):
                             }
                         )
                         room_data['time_last_action'] = int(time.time()) + 1
+
+                        current_player_nick = room_data[room_data['current_player']]
+                        room_data['is_start'] = True
+                        room_data['status'] = f'{current_player_nick} (X) is moving now'
+
                         cache.set(room_code, room_data)
 
     async def disconnect(self, code):
@@ -81,6 +86,10 @@ class Game(AsyncWebsocketConsumer):
     """
     Consumer for game
     """
+
+    def __init__(self):
+        super().__init__()
+        asyncio.create_task(self.check_end(2))
 
     async def connect(self):
         await self.accept()
@@ -117,18 +126,20 @@ class Game(AsyncWebsocketConsumer):
                         return
 
                     if username == room_data['player1']:
-                        user_num = 'player1'
                         enemy_user_num = 'player2'
                     if username == room_data['player2']:
-                        user_num = 'player2'
                         enemy_user_num = 'player1'
 
                     move_id = int(response['position'])
                     border_to_render = room_data['border_to_render']
                     current_move = room_data['current_move']
                     if border_to_render[move_id] == '':
+                        # print(room_data)
+                        print(username)
                         border_to_render[move_id] = current_move
+
                         room_data['current_player'] = enemy_user_num
+
                         time_delta = int(time.time()) - room_data['time_last_action']
                         room_data['time_last_action'] = int(time.time())
                         match room_data['current_player']:
@@ -137,16 +148,20 @@ class Game(AsyncWebsocketConsumer):
                             case 'player2':
                                 room_data['player1_time'] -= time_delta
 
-                        await self.channel_layer.group_send(
-                            room_code, room_data
-                        )
                         if current_move == 'X':
                             current_move = 'O'
                         else:
                             current_move = 'X'
 
+                        enemy_user_nick = room_data[enemy_user_num]
+                        room_data['status'] = f'{enemy_user_nick} ({current_move}) is moving now'
+                        await self.channel_layer.group_send(
+                            room_code, room_data
+                        )
+
                         room_data['current_move'] = current_move
                         room_data['border_to_render'] = border_to_render
+
                         cache.set(room_code, room_data)
 
     async def disconnect(self, code):
@@ -160,3 +175,6 @@ class Game(AsyncWebsocketConsumer):
     async def check_end(second):
         await asyncio.sleep(second)
         print("task completed")
+
+
+

@@ -147,6 +147,7 @@ AUTH_USER_MODEL = 'my_auth.CustomUser'
 
 # DELETE IT
 from django.core.cache import cache
+
 room_code = 'aboba'  # DELETE IT
 cache.set(
     room_code, {
@@ -156,6 +157,7 @@ cache.set(
         'current_move': 'X',
         'current_player': 'player1',
         'border_to_render': [''] * 9,
+        'status': 'wait for game',
         'is_end': False,
         'is_start': False,
         'player1_time': 120,
