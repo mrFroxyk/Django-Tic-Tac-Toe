@@ -69,7 +69,12 @@ socket.onmessage = function (event) {
                 } else {
                     console.log('отправил приглос на реванш')
                 }
-
+                break;
+            case 'game.redirect':
+                let resultUrl = window.location.protocol + "//" + window.location.host + data.relative_url;
+                console.log('redirect:', resultUrl);
+                window.location.href = resultUrl;
+                break;
         }
     } catch (e) {
         console.log(`Error ${e}`)

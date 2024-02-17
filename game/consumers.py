@@ -1,6 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlencode
+from django.urls import reverse
 import asyncio
 import json
 import time
@@ -14,73 +15,63 @@ class GameLobby(AsyncWebsocketConsumer):
     """
 
     async def connect(self):
-        await self.accept()
+        query_params = parse_qs(self.scope['query_string'].decode('utf-8'))
+        room_code = query_params.get('room_code', [None])[0]
+        if not room_code:
+            await self.close(code=400)
+        else:
+            room_data = cache.get(room_code)
+            current_username = self.scope['user'].username
+            if current_username == room_data['player1']:
+                await self.channel_layer.group_add(
+                    room_code,
+                    self.channel_name
+                )
 
-    async def receive(self, text_data=None, bytes_data=None):
-        if text_data:
-            response = json.loads(text_data)
-            match response['type']:
-                case 'join':
-                    current_username = self.scope['user'].username
-                    room_code = response['room_code']
-                    room_data = cache.get(room_code)
-                    if not room_data:
-                        print('Game not found')
-                        return
+                await self.channel_layer.group_send(
+                    room_code,
+                    {
+                        'type': 'lobby.message',
+                        'message': 'first connected'
+                    }
+                )
+            elif not room_data['player2']:
+                await self.channel_layer.group_add(
+                    room_code,
+                    self.channel_name
+                )
+                await self.channel_layer.group_send(
+                    room_code,
+                    {
+                        'type': 'lobby.message',
+                        'message': 'second connected'
+                    }
+                )
+                room_data['player2'] = self.scope['user'].username
+                await self.channel_layer.group_send(
+                    room_code,
+                    {
+                        'type': 'lobby.redirect',
+                        'relative_url': reverse('game:game', kwargs={'room_code': room_code})
+                    }
+                )
+                room_data['time_last_action'] = int(time.time())
 
-                    if current_username == room_data['player1']:
-                        await self.channel_layer.group_add(
-                            room_code,
-                            self.channel_name
-                        )
+                current_player_nick = room_data[room_data['current_player']]
+                room_data['is_start'] = True
+                room_data['status'] = f'{current_player_nick} (X) is moving now'
 
-                        await self.channel_layer.group_send(
-                            room_code,
-                            {
-                                'type': 'chat.message',
-                                'message': 'first connected'
-                            }
-                        )
-                    elif not room_data['player2']:
-                        await self.channel_layer.group_add(
-                            room_code,
-                            self.channel_name
-                        )
-                        await self.channel_layer.group_send(
-                            room_code,
-                            {
-                                'type': 'chat.message',
-                                'message': 'second connected'
-                            }
-                        )
-                        room_data['player2'] = self.scope['user'].username
-                        await self.channel_layer.group_send(
-                            room_code,
-                            {
-                                'type': 'chat.redirect',
-                            }
-                        )
-                        room_data['time_last_action'] = int(time.time())
+                cache.set(room_code, room_data)
+            await self.accept()
 
-                        current_player_nick = room_data[room_data['current_player']]
-                        room_data['is_start'] = True
-                        room_data['status'] = f'{current_player_nick} (X) is moving now'
-
-                        cache.set(room_code, room_data)
-
-    async def disconnect(self, code):
-        print("WebSocket disconnected")
-
-    async def chat_message(self, event):
+    async def lobby_message(self, event):
         await self.send(text_data=json.dumps({
             'type': 'websocket.message',
             'message': event['message']
         }))
 
-    async def chat_redirect(self, event):
-        await self.send(text_data=json.dumps({
-            'type': 'websocket.redirect',
-        }))
+    async def lobby_redirect(self, event):
+        await self.send(text_data=json.dumps(event))
 
 
 class Game(AsyncWebsocketConsumer):
@@ -191,22 +182,33 @@ class Game(AsyncWebsocketConsumer):
 
                         cache.set(room_code, room_data)
                 case 'revenge_request':
-                    room_data = cache.get(room_code)
+                    room_data = dict(cache.get(room_code))
                     username = self.scope['user'].username
 
                     if username == room_data['player1']:
-                        enemy_username = room_data['player2']
-                    elif username == room_data['player2']:
-                        enemy_username = room_data['player1']
+                        room_data['player1_rematch_request'] = True
+                    if username == room_data['player2']:
+                        room_data['player2_rematch_request'] = True
+
+                    cache.set(room_code, room_data)
+                    if room_data['player1_rematch_request'] == room_data['player2_rematch_request'] == True:
+                        # If both players agree, start a rematch.
+                        context = {'game_type': 'revenge', 'old_room_code': room_code, }
+                        await self.channel_layer.group_send(
+                            room_code,
+                            {
+                                'type': 'game.redirect',
+                                'relative_url': reverse('game:create_game') + '?' + urlencode(context)
+                            }
+                        )
                     else:
-                        return
-                    print('suck')
-                    await self.channel_layer.group_send(
-                        room_code,
-                        {
-                            'type': 'game.revenge'
-                        }
-                    )
+                        # Send an invitation to a rematch to the opponent.
+                        await self.channel_layer.group_send(
+                            room_code,
+                            {
+                                'type': 'game.revenge'
+                            }
+                        )
 
     async def disconnect(self, code):
         ...
@@ -218,6 +220,9 @@ class Game(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event))
 
     async def game_revenge(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def game_redirect(self, event):
         await self.send(text_data=json.dumps(event))
 
     @staticmethod
