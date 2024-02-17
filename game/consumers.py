@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
+from urllib.parse import parse_qs
 import asyncio
 import json
 import time
@@ -59,7 +60,7 @@ class GameLobby(AsyncWebsocketConsumer):
                                 'type': 'chat.redirect',
                             }
                         )
-                        room_data['time_last_action'] = int(time.time()) + 1
+                        room_data['time_last_action'] = int(time.time())
 
                         current_player_nick = room_data[room_data['current_player']]
                         room_data['is_start'] = True
@@ -92,7 +93,35 @@ class Game(AsyncWebsocketConsumer):
         asyncio.create_task(self.check_end(2))
 
     async def connect(self):
-        await self.accept()
+        """
+        Accept connections from requests with the template
+        'ws://host:8000/game?room_code=room_code',
+        either as an observer or a gamer.
+        """
+        query_params = parse_qs(self.scope['query_string'].decode('utf-8'))
+        room_code = query_params.get('room_code', [''])[0]
+        if room_code:
+            await self.accept()
+        else:
+            await self.close(code=400)
+
+        await self.channel_layer.group_add(
+            room_code,
+            self.channel_name
+        )
+
+        room_data = cache.get(room_code)
+
+        # Correct the time of move if a connection occurs between moves
+        time_delta = int(time.time()) - room_data['time_last_action']
+        match room_data['current_player']:
+            case 'player1':
+                room_data['player1_time'] -= time_delta
+            case 'player2':
+                room_data['player2_time'] -= time_delta
+        await self.send(
+            text_data=json.dumps(room_data)
+        )
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
@@ -100,25 +129,8 @@ class Game(AsyncWebsocketConsumer):
             print(response)
             room_code = response['room_code']
             match response['type']:
-                case 'join':
-                    await self.channel_layer.group_add(
-                        room_code,
-                        self.channel_name
-                    )
-                    room_data = cache.get(room_code)
-
-                    # Correct the time of move if a connection occurs between moves
-                    time_delta = int(time.time()) - room_data['time_last_action']
-                    match room_data['current_player']:
-                        case 'player1':
-                            room_data['player1_time'] -= time_delta
-                        case 'player2':
-                            room_data['player2_time'] -= time_delta
-                    await self.send(
-                        text_data=json.dumps(room_data)
-                    )
-
                 case 'move':
+                    move_id = int(response['position'])
                     room_data = cache.get(room_code)
                     username = self.scope['user'].username
 
@@ -131,7 +143,6 @@ class Game(AsyncWebsocketConsumer):
                     if username == room_data['player2']:
                         enemy_user_num = 'player1'
 
-                    move_id = int(response['position'])
                     border_to_render = room_data['border_to_render']
                     current_move = room_data['current_move']
 
@@ -142,6 +153,13 @@ class Game(AsyncWebsocketConsumer):
                             room_data['is_end'] = True
                             await self.channel_layer.group_send(
                                 room_code, room_data
+                            )
+
+                            await self.channel_layer.group_send(
+                                room_code,
+                                {
+                                    'type': 'game.end'
+                                }
                             )
                             cache.set(room_code, room_data)
                             return
@@ -172,17 +190,40 @@ class Game(AsyncWebsocketConsumer):
                         room_data['border_to_render'] = border_to_render
 
                         cache.set(room_code, room_data)
+                case 'revenge_request':
+                    room_data = cache.get(room_code)
+                    username = self.scope['user'].username
+
+                    if username == room_data['player1']:
+                        enemy_username = room_data['player2']
+                    elif username == room_data['player2']:
+                        enemy_username = room_data['player1']
+                    else:
+                        return
+                    print('suck')
+                    await self.channel_layer.group_send(
+                        room_code,
+                        {
+                            'type': 'game.revenge'
+                        }
+                    )
 
     async def disconnect(self, code):
         ...
 
     async def game_move(self, event):
-        event['type'] = 'websocket.render'
+        await self.send(text_data=json.dumps(event))
+
+    async def game_end(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def game_revenge(self, event):
         await self.send(text_data=json.dumps(event))
 
     @staticmethod
     async def check_end(second):
         await asyncio.sleep(second)
+
         print("task completed")
 
     @staticmethod

@@ -4,10 +4,6 @@ const game_socket = new WebSocket('ws://127.0.0.1:8000/game_lobby');
 
 // const socket = new WebSocket('ws:/192.168.3.2:8000/chat');
 game_socket.onopen = function (e) {
-    game_socket.send(JSON.stringify({
-        type: 'handshake',
-        message: 'Hello from Js client'
-    }));
     const currentURL = window.location.href;
     const segments = currentURL.split('/');
     const room_code = segments[segments.length - 2]; //get room_code
@@ -46,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log(url_button)
     let isCopied = false
     url_button.addEventListener('click', () => {
-        console.log("fff")
         navigator.clipboard.writeText(url_button.textContent);
         if (!isCopied) {
             green_message.style.opacity = 1

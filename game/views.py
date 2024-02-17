@@ -25,6 +25,7 @@ def create_game(request):
     cache.set(
         room_code, {
             'type': 'game.move',
+            'room_code': room_code,
             'player1': request.user.username,
             'player2': None,
             'current_move': 'X',
@@ -56,9 +57,11 @@ def game_lobby(request, room_code):
 def game(request, room_code):
     # TODO: check for game end
     chat_template = chat(request)
+    random_number = random.randint(1, 100)
     chat_template.render()
     context = {
         'chat': chat_template.rendered_content,
-        'request': request
+        'request': request,
+        'random_number': random_number
     }
     return render(request, 'game/game.html', context)

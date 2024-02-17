@@ -34,40 +34,61 @@ function renderBoardDom(values) {
 }
 
 
-const socket = new WebSocket('ws://127.0.0.1:8000/game')
-// const socket = new WebSocket('ws://192.168.3.2:8000/game')
-// const socket = new WebSocket('ws://10.30.225.191:8000/game')
-socket.onopen = function (event) {
-    socket.send(
-        JSON.stringify(
-            {
-                type: 'join',
-                room_code: room_code,
-            }
-        )
-    )
-}
+const socket = new WebSocket('ws://' + window.location.host + '/game?room_code=' + room_code)
 
 const player1_time = document.getElementById('player1_time')
 const player2_time = document.getElementById('player2_time')
 let currentCuratine;
 let time_player1 = 0
 let time_player2 = 0
+const status_block = document.querySelector(".game__status")
 socket.onmessage = function (event) {
     try {
         const data = JSON.parse(event.data)
         console.log(data)
-        const border_to_render = data.border_to_render
-        renderBoardDom(border_to_render)
+        switch (data.type) {
+            case 'game.move':
+                const border_to_render = data.border_to_render
+                renderBoardDom(border_to_render)
+                status_block.textContent = data['status']
+                renderTimeInDom(data)
+                break;
+            case 'game.end':
+                let textContent = status_block.textContent;
+                status_block.textContent = '';
+                const button = document.createElement('button');
+                button.textContent = textContent;
+                button.addEventListener('click', revengeOnClick);
+                status_block.appendChild(button)
+                console.log('game end((')
+                clearInterval(currentCuratine)
+                break;
+            case 'game.revenge':
+                if (!isRevengeSent) {
+                    console.log('получил приглашение на реванш')
+                } else {
+                    console.log('отправил приглос на реванш')
+                }
 
-        const status = document.querySelector(".game__status")
-        status.textContent = data['status']
-
-        renderTimeInDom(data)
-
+        }
     } catch (e) {
         console.log(`Error ${e}`)
     }
+}
+
+let isRevengeSent = false
+
+function revengeOnClick() {
+    console.log('Кнопка нажата!');
+    if (!isRevengeSent) {
+        socket.send(JSON.stringify(
+            {
+                type: 'revenge_request',
+                room_code: room_code
+            }
+        ))
+    }
+    isRevengeSent = true
 }
 
 function renderTimeInDom(data) {
