@@ -3,6 +3,7 @@ from django.core.cache import cache
 from urllib.parse import parse_qs, urlencode
 from django.urls import reverse
 import asyncio
+import random
 import json
 import time
 
@@ -95,6 +96,7 @@ class Game(AsyncWebsocketConsumer):
             await self.accept()
         else:
             await self.close(code=400)
+            return
 
         await self.channel_layer.group_add(
             room_code,
@@ -104,6 +106,7 @@ class Game(AsyncWebsocketConsumer):
         room_data = cache.get(room_code)
 
         # Correct the time of move if a connection occurs between moves
+        print(room_code, room_data)
         time_delta = int(time.time()) - room_data['time_last_action']
         match room_data['current_player']:
             case 'player1':
@@ -156,7 +159,7 @@ class Game(AsyncWebsocketConsumer):
                             return
 
                         room_data['current_player'] = enemy_user_num
-
+                        print(room_data)
                         time_delta = int(time.time()) - room_data['time_last_action']
                         room_data['time_last_action'] = int(time.time())
 
@@ -182,23 +185,47 @@ class Game(AsyncWebsocketConsumer):
 
                         cache.set(room_code, room_data)
                 case 'revenge_request':
-                    room_data = dict(cache.get(room_code))
+                    room_data = cache.get(room_code)
                     username = self.scope['user'].username
 
                     if username == room_data['player1']:
                         room_data['player1_rematch_request'] = True
                     if username == room_data['player2']:
                         room_data['player2_rematch_request'] = True
-
                     cache.set(room_code, room_data)
+
                     if room_data['player1_rematch_request'] == room_data['player2_rematch_request'] == True:
                         # If both players agree, start a rematch.
-                        context = {'game_type': 'revenge', 'old_room_code': room_code, }
+
+                        old_room_code_count = int(room_code.split('.')[1])  # 'fjord12.2' -> 2
+                        old_room_code_body = room_code.split('.')[0]  # 'fjord12.2' -> fjord12
+                        new_room_code = old_room_code_body + '.' + str(old_room_code_count + 1)
+
+                        new_room_data = {
+                            'type': 'game.move',
+                            'room_code': new_room_code,
+                            'player1': room_data['player1'],
+                            'player2': room_data['player2'],
+                            'current_move': 'X',
+                            'current_player': random.choice(['player1', 'player2']),
+                            'border_to_render': [''] * 9,
+                            'status': 'Wait for game',
+                            'is_end': False,
+                            'is_start': True,
+                            'player1_time': 120,
+                            'player2_time': 120,
+                            'player1_rematch_request': False,
+                            'player2_rematch_request': False,
+                            'time_last_action': int(time.time()),
+                        }
+                        new_room_data['status'] = f"{new_room_data[new_room_data['current_player']]} (X) is moving"
+                        cache.set(new_room_code, new_room_data)
+
                         await self.channel_layer.group_send(
                             room_code,
                             {
                                 'type': 'game.redirect',
-                                'relative_url': reverse('game:create_game') + '?' + urlencode(context)
+                                'relative_url': reverse('game:game', kwargs={'room_code': new_room_code})
                             }
                         )
                     else:
