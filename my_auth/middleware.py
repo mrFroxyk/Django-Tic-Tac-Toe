@@ -11,5 +11,5 @@ class AuthCheckerMiddleware:
         if request.path == reverse('my_auth:login'):
             return response
         if not request.user.is_authenticated:
-            return redirect(reverse('my_auth:login'))
+            return redirect(reverse('my_auth:login') + '?next=' + request.path)
         return response

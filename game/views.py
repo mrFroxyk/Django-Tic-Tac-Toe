@@ -12,7 +12,8 @@ def find_game(request):
     chat_template = chat(request)
     chat_template.render()
     context = {
-        'chat': chat_template.rendered_content
+        'chat': chat_template.rendered_content,
+        'user': request.user,
     }
     return render(request, 'game/find_game.html', context)
 
@@ -59,7 +60,8 @@ def game_lobby(request, room_code):
         'chat': chat_template.rendered_content,
         'request': request,
         'url': request.build_absolute_uri(),
-        'random_number': random_number
+        'random_number': random_number,
+        'user': request.user,
     }
     return render(request, 'game/game_lobby.html', context)
 
@@ -72,6 +74,7 @@ def game(request, room_code):
     context = {
         'chat': chat_template.rendered_content,
         'request': request,
-        'random_number': random_number
+        'random_number': random_number,
+        'user': request.user,
     }
     return render(request, 'game/game.html', context)

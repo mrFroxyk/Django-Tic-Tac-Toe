@@ -1,18 +1,31 @@
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render
-from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, logout
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from .forms import AuthForm, RegisterUserForm
 from .logic import GlobalIDUserManager
 from .models import CustomUser
-from .forms import AuthForm
 
 IDManager = GlobalIDUserManager()
 
 
+def signup(request):
+    if request.method == 'POST':
+        form = RegisterUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('my_auth:login'))
+    context = {
+        'form': RegisterUserForm(),
+        'user': request.user,
+    }
+    return render(request, 'my_auth/signup.html', context)
+
+
 class CustomLoginView(LoginView):
     form_class = AuthForm
-    template_name = 'my_auth/reg.html'
+    template_name = 'my_auth/login.html'
 
     def get_success_url(self):
         return reverse_lazy('chat:chat')
@@ -33,4 +46,8 @@ def guest_login(request):
         request.session.set_expiry(86400)
         login(request, guest_user)
         return HttpResponse(f'You were logged in under the nickname {request.user.username}')
+
+
+def logout_user(request):
+    logout(request)
 

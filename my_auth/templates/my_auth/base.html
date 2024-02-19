@@ -36,14 +36,14 @@
         </a>
 
     </div>
-    <div class="user">
+    <a class="user" href="{% url 'my_auth:login' %}">
         <div class="user__ava">
 
         </div>
         <div class="user__nickname">
-            Admin
+            {{ user.username }}
         </div>
-    </div>
+    </a>
 </nav>
 <div class="content">
     {% block content %}{% endblock content %}

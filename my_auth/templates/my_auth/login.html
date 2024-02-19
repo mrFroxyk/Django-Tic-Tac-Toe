@@ -1,0 +1,30 @@
+{% extends 'my_auth/base.html' %}
+
+{% block meta_data %}
+    <title>Login</title>
+{% endblock %}
+
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <h4>Have a nice day, {{ user.username }}</h4>
+        <a href="{% url 'my_auth:guest_login' %}">Re-log in as a guest?</a>
+    {% else %}
+        <h4>Please, log in</h4>
+        <form method="post" action="{% url 'my_auth:login' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+        <div>
+            <a href="{% url 'my_auth:guest_login' %}">Log in as a guest</a>
+        </div>
+        <div>
+            <a href="{% url 'my_auth:signup' %}">Don't have an account?</a>
+        </div>
+
+    {% endif %}
+    <div>
+        <a href="{% url 'my_auth:logout' %}?next={% url 'my_auth:login' %}">Log out</a>
+    </div>
+
+{% endblock %}
