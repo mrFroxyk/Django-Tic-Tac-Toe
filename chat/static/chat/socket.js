@@ -31,7 +31,6 @@ function renderMessage(textContent){
 }
 function sendMessage() {
     const messageInput = document.getElementById('messageInput');
-    const chat = document.getElementById('chat');
 
     if (messageInput.value.trim() !== '') {
         chat_socket.send(JSON.stringify({

@@ -1,0 +1,7 @@
+{% extends 'game/game.html' %}
+{% load static %}
+
+{% block script %}
+    <script defer src="{% static 'game/js/game.js' %}?v={{ random_number }}.1"></script>
+    <script defer src="{% static 'chat/chat.js' %}?v={{ random_number }}"></script>
+{% endblock %}

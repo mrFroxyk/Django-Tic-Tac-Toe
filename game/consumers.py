@@ -106,7 +106,6 @@ class Game(AsyncWebsocketConsumer):
         room_data = cache.get(room_code)
 
         # Correct the time of move if a connection occurs between moves
-        print(room_code, room_data)
         time_delta = int(time.time()) - room_data['time_last_action']
         match room_data['current_player']:
             case 'player1':
@@ -120,7 +119,7 @@ class Game(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
             response = json.loads(text_data)
-            print(response)
+            # print(response)
             room_code = response['room_code']
             match response['type']:
                 case 'move':
@@ -159,7 +158,6 @@ class Game(AsyncWebsocketConsumer):
                             return
 
                         room_data['current_player'] = enemy_user_num
-                        print(room_data)
                         time_delta = int(time.time()) - room_data['time_last_action']
                         room_data['time_last_action'] = int(time.time())
 
@@ -255,8 +253,7 @@ class Game(AsyncWebsocketConsumer):
     @staticmethod
     async def check_end(second):
         await asyncio.sleep(second)
-
-        print("task completed")
+        print("In the future, a complete game checker will be available.")
 
     @staticmethod
     def check_winner(border, current_player):

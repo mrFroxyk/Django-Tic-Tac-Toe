@@ -1,9 +1,10 @@
 {% extends 'my_auth/base.html' %}
 {% load static %}
 {% block meta_data %}
-    <link rel="stylesheet" href="{% static 'game/css/game.css' %}?v=1.1">
+    <link rel="stylesheet" href="{% static 'game/css/game.css' %}?v=1.4">
     <title>Game with ...</title>
-    <script defer src="{% static 'game/js/game.js' %}?v={{ random_number }}.1"></script>
+    {% block script %}
+    {% endblock %}
     <style>
         .content {
             background-image: url("{% static 'game/img/fon.png' %}");
@@ -19,7 +20,7 @@
                 02:00
             </div>
             <div class="game-info__nick" id="player1_nick">
-                Admin
+                {{ player1 }}
             </div>
             <div class="game__status">
                 Admin (X) is moving
@@ -28,7 +29,7 @@
                 02:00
             </div>
             <div class="game-info__nick" id="player2_nick">
-                Gaymer
+                {{ player2 }}
             </div>
         </div>
         <div class="game-board" id="game-board">
@@ -44,7 +45,18 @@
         </div>
         <div class="chat">
             <div class="chat__history">
-
+                <div class="chat__scrollable">
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                </div>
             </div>
             <div class="chat__send-message">
                 <label>

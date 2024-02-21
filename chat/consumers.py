@@ -19,11 +19,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             response = json.loads(text_data)
             match response['type']:
                 case 'message':
+                    username = self.scope['user'].username
                     await self.channel_layer.group_send(
                         'all_chat',
                         {
                             'type': 'chat.message',
-                            'message': response['message']
+                            'message': f"{username}: {response['message']}"
                         }
                     )
 

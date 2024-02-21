@@ -75,6 +75,21 @@ img {
     align-items: center;
 }
 
+*::-webkit-scrollbar {
+    width: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: linear-gradient(180deg, #00c6fb, #005bea);
+}
+
+*::-webkit-scrollbar-track {
+    -webkit-box-shadow: 5px 5px 5px -5px rgba(34, 60, 80, 0.2) inset;
+    background-color: #1d181f;
+    border-radius: 10px;
+}
+
 .nav__logo {
     width: 55px;
     height: 55px;
@@ -97,6 +112,7 @@ img {
     height: 100%;
     color: #f9f9ff;
 }
+
 .nav__menu-item:hover {
     -webkit-box-shadow: 13px 8px 15px 8px rgba(34, 60, 80, 0.2);
     -moz-box-shadow: 13px 8px 15px 8px rgba(34, 60, 80, 0.2);
@@ -128,10 +144,12 @@ img {
     font-weight: 200;
     font-family: "Dosis";
 }
-.content{
+
+.content {
     min-height: 100vh;
 }
-.footer{
+
+.footer {
     background: black;
     min-height: 200px;
 }
