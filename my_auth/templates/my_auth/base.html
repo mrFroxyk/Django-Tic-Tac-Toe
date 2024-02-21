@@ -6,7 +6,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{% static 'my_auth/css/base.css' %}?v=1.3">
+    <link rel="stylesheet" href="{% static 'my_auth/css/base.css' %}?v=1.4">
     <title>Document</title>
     {% block meta_data %}{% endblock meta_data %}
     <style>
@@ -32,11 +32,11 @@
                 Playing with a friend
             </div>
         </a>
-        <a href="{% url 'game:game_with_bot' %}">
-            <div class="nav__menu-item">
-                Playing with a bot
-            </div>
-        </a>
+{#        <a href="{% url 'game:game_with_bot' %}">#}
+{#            <div class="nav__menu-item">#}
+{#                Playing with a bot#}
+{#            </div>#}
+{#        </a>#}
 
     </div>
     <a class="user" href="{% url 'my_auth:login' %}">

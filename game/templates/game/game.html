@@ -3,11 +3,10 @@
 {% block meta_data %}
     <link rel="stylesheet" href="{% static 'game/css/game.css' %}?v=1.4">
     <title>Game with ...</title>
-    {% block script %}
-    {% endblock %}
     <style>
         .content {
             background-image: url("{% static 'game/img/fon.png' %}");
+            background-size: cover;
         }
     </style>
 
@@ -15,56 +14,12 @@
 
 {% block content %}
     <div class="game">
-        <div class="game-info">
-            <div class="game-info__time" id="player1_time">
-                02:00
-            </div>
-            <div class="game-info__nick" id="player1_nick">
-                {{ player1 }}
-            </div>
-            <div class="game__status">
-                Admin (X) is moving
-            </div>
-            <div class="game-info__time" id="player2_time">
-                02:00
-            </div>
-            <div class="game-info__nick" id="player2_nick">
-                {{ player2 }}
-            </div>
-        </div>
+        {% include 'game/game-info.html' %}
         <div class="game-board" id="game-board">
             {#            <div class="game-board__squared" id="1"></div>#}
             {#            <div class="game-board__squared" id="2"></div>#}
-            {#            <div class="game-board__squared" id="3"></div>#}
-            {#            <div class="game-board__squared" id="4"></div>#}
-            {#            <div class="game-board__squared" id="5"></div>#}
-            {#            <div class="game-board__squared" id="6"></div>#}
-            {#            <div class="game-board__squared" id="7"></div>#}
-            {#            <div class="game-board__squared" id="8"></div>#}
-            {#            <div class="game-board__squared" id="9"></div>#}
+            {#            etc...#}
         </div>
-        <div class="chat">
-            <div class="chat__history">
-                <div class="chat__scrollable">
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                </div>
-            </div>
-            <div class="chat__send-message">
-                <label>
-                    <input class="chat__input" type="text" placeholder="Type your message...">
-                </label>
-                <img class="chat__seng-ico" src="{% static 'game/img/send.png' %}" alt="send">
-
-            </div>
-        </div>
+        {% include 'game/chat.html' %}
     </div>
 {% endblock content %}

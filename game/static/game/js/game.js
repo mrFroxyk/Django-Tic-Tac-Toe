@@ -41,7 +41,7 @@ const player2_time = document.getElementById('player2_time')
 let currentCuratine;
 let time_player1 = 0
 let time_player2 = 0
-const status_block = document.querySelector(".game__status")
+const statusBlock = document.querySelector(".game__status")
 socket.onmessage = function (event) {
     try {
         const data = JSON.parse(event.data)
@@ -50,16 +50,16 @@ socket.onmessage = function (event) {
             case 'game.move':
                 const border_to_render = data.border_to_render
                 renderBoardDom(border_to_render)
-                status_block.textContent = data['status']
+                statusBlock.textContent = data['status']
                 renderTimeInDom(data)
                 break;
             case 'game.end':
-                let textContent = status_block.textContent;
-                status_block.textContent = '';
+                let textContent = statusBlock.textContent;
+                statusBlock.textContent = '';
                 const button = document.createElement('button');
                 button.textContent = textContent;
                 button.addEventListener('click', revengeOnClick);
-                status_block.appendChild(button)
+                statusBlock.appendChild(button)
                 console.log('game end((')
                 clearInterval(currentCuratine)
                 break;
