@@ -10,8 +10,8 @@ from django.core.asgi import get_asgi_application
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter
 from channels.routing import URLRouter
-from message_test.urls import websocket_urlpatterns
 from game.urls import websocket_urlpatterns_game
+from message_test.urls import websocket_urlpatterns
 from chat.urls import websocket_urlpatterns_chat
 import os
 

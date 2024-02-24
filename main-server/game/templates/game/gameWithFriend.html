@@ -9,7 +9,8 @@
             background-size: cover;
         }
     </style>
-
+    <script defer src="{% static 'game/js/game.js' %}?v={{ random_number }}.1"></script>
+    <script defer src="{% static 'chat/chat.js' %}?v={{ random_number }}"></script>
 {% endblock meta_data %}
 
 {% block content %}

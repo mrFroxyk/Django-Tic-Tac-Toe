@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="django" name="Django">
       <configuration>
-        <option name="rootFolder" value="$MODULE_DIR$" />
+        <option name="rootFolder" value="$MODULE_DIR$/main-server" />
         <option name="settingsModule" value="Core/settings.py" />
         <option name="manageScript" value="manage.py" />
         <option name="environment" value="&lt;map/&gt;" />
@@ -23,16 +23,5 @@
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
-    <option name="TEMPLATE_FOLDERS">
-      <list>
-        <option value="$MODULE_DIR$/chat/templates" />
-        <option value="$MODULE_DIR$/message_test/templates" />
-        <option value="$MODULE_DIR$/message_test/templates/message_test" />
-        <option value="$MODULE_DIR$/online_user/templates/online_user" />
-        <option value="$MODULE_DIR$/my_auth/templates" />
-        <option value="$MODULE_DIR$/online_user/templates" />
-        <option value="$MODULE_DIR$/game/templates" />
-      </list>
-    </option>
   </component>
 </module>
