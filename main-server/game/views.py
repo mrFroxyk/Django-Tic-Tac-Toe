@@ -15,6 +15,7 @@ def find_game(request):
         'chat': chat_template.rendered_content,
         'user': request.user,
     }
+    print('niiga')
     return render(request, 'game/findGame.html', context)
 
 

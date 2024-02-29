@@ -1,2 +1,13 @@
 
 *.pyc
+/FindGameService/.idea/FindGameService.iml
+/main-server/.idea/main-server.iml
+/FindGameService/.idea/misc.xml
+/FindGameService/.idea/modules.xml
+/main-server/.idea/modules.xml
+/FindGameService/.idea/inspectionProfiles/profiles_settings.xml
+/main-server/.idea/inspectionProfiles/profiles_settings.xml
+/FindGameService/.idea/inspectionProfiles/Project_Default.xml
+/main-server/.idea/inspectionProfiles/Project_Default.xml
+/FindGameService/.idea/vcs.xml
+/main-server/.idea/vcs.xml

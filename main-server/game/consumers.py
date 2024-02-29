@@ -6,6 +6,7 @@ import asyncio
 import random
 import json
 import time
+import httpx
 
 
 class GameLobby(AsyncWebsocketConsumer):
@@ -270,3 +271,16 @@ class Game(AsyncWebsocketConsumer):
         for (i1, i2, i3) in win_position:
             if border[i1] == border[i2] == border[i3] and border[i1] != '':
                 return f'{current_player} ({border[i1]}) is win! Congratulation!'
+
+
+class FastGame(AsyncWebsocketConsumer):
+    async def connect(self):
+        async with httpx.AsyncClient() as client:
+            response = await client.get('http://127.0.0.1:8001/queue')
+            print('make post reauest')
+        await self.accept()
+
+    async def receive(self, text_data=None, bytes_data=None):
+        if text_data:
+            response = json.loads(text_data)
+            print(response)
