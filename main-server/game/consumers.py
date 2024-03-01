@@ -275,12 +275,26 @@ class Game(AsyncWebsocketConsumer):
 
 class FastGame(AsyncWebsocketConsumer):
     async def connect(self):
+        # Adding a user to the queue for waiting for opponent
         async with httpx.AsyncClient() as client:
-            response = await client.get('http://127.0.0.1:8001/queue')
-            print('make post reauest')
+            data = {
+                'user_code': self.channel_name
+            }
+            response = await client.post('http://127.0.0.1:8001/queue', data=data)
+
+            if response.status_code == 202:
+                response = await client.get('http://127.0.0.1:8001/queue')
+                print('suck', json.dumps(response.text))
         await self.accept()
 
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
             response = json.loads(text_data)
             print(response)
+
+    async def disconnect(self, code):
+        async with httpx.AsyncClient() as client:
+            data = {
+                'user_code': self.channel_name
+            }
+            await client.delete('http://127.0.0.1:8001/queue', params=data)
