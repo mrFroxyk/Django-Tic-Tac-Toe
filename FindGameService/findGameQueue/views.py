@@ -7,6 +7,10 @@ queue = []
 
 
 class Queue(views.APIView):
+    """
+    Queue manager. Players who are searching for a game
+    arrive here and wait to create the game
+    """
     @staticmethod
     def post(request: Request):
         global queue
@@ -23,6 +27,10 @@ class Queue(views.APIView):
 
     @staticmethod
     def get(request: Request):
+        """
+        Request to create a new game lobby. If there are enough users in the
+        queue to create a game (2 users), their channel names will be returned.
+        """
         global queue
         if len(queue) >= 2:
             user_to_redirect = queue[:2]
@@ -36,7 +44,13 @@ class Queue(views.APIView):
 
     @staticmethod
     def delete(request: Request):
+        """
+        If a user disconnects from the queue, they will be deleted from the list
+        """
         global queue
         user_code = request.query_params.get('user_code')
-        queue.remove(user_code)
+        try:
+            queue.remove(user_code)
+        except ValueError:
+            ...
         return Response(status=status.HTTP_200_OK)

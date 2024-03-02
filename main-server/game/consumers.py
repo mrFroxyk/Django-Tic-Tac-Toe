@@ -280,11 +280,21 @@ class FastGame(AsyncWebsocketConsumer):
             data = {
                 'user_code': self.channel_name
             }
-            response = await client.post('http://127.0.0.1:8001/queue', data=data)
+            response_to_send_new_user = await client.post('http://127.0.0.1:8001/queue', data=data)
 
-            if response.status_code == 202:
-                response = await client.get('http://127.0.0.1:8001/queue')
-                print('suck', json.dumps(response.text))
+            if response_to_send_new_user.status_code == 202:
+                # Attempt to create a new game
+                response_to_create_queue = await client.get('http://127.0.0.1:8001/queue')
+                if response_to_create_queue.status_code == 200:
+                    user_codes = json.loads(response_to_create_queue.text).get('user_codes')
+                    # вынести создание игры в отдельную функцию, логический слой
+                    for code in user_codes:
+                        await self.channel_layer.send(
+                            code,
+                            {
+                                'type': 'search.redirect'
+                            }
+                        )
         await self.accept()
 
     async def receive(self, text_data=None, bytes_data=None):
@@ -298,3 +308,6 @@ class FastGame(AsyncWebsocketConsumer):
                 'user_code': self.channel_name
             }
             await client.delete('http://127.0.0.1:8001/queue', params=data)
+
+    async def search_redirect(self, event):
+        await self.send(text_data=json.dumps(event))
