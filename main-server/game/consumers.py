@@ -87,7 +87,6 @@ class Game(AsyncWebsocketConsumer):
 
     def __init__(self):
         super().__init__()
-        asyncio.create_task(self.check_end(2))
 
     async def connect(self):
         """
@@ -98,6 +97,7 @@ class Game(AsyncWebsocketConsumer):
         query_params = parse_qs(self.scope['query_string'].decode('utf-8'))
         room_code = query_params.get('room_code', [''])[0]
         if room_code:
+            # asyncio.create_task(self.check_end(1 + 2, room_code))
             await self.accept()
         else:
             await self.close(code=400)
@@ -244,10 +244,31 @@ class Game(AsyncWebsocketConsumer):
     async def game_redirect(self, event):
         await self.send(text_data=json.dumps(event))
 
-    @staticmethod
-    async def check_end(second):
+    async def check_end(self, second, room_code):
         await asyncio.sleep(second)
         print("In the future, a complete game checker will be available.")
+        room_data = cache.get(room_code)
+        room_data['is_end'] = True
+        room_data['status'] = 'Time is over'
+        # Correct the time of move if a connection occurs between moves
+        # time_delta = int(time.time()) - room_data['time_last_action']
+        # match room_data['current_player']:
+        #     case 'player1':
+        #         room_data['player2_time'] -= time_delta
+        #     case 'player2':
+        #         room_data['player1_time'] -= time_delta
+        print(room_data)
+        await self.channel_layer.group_send(
+            room_code, room_data
+        )
+
+        await self.channel_layer.group_send(
+            room_code,
+            {
+                'type': 'game.end'
+            }
+        )
+        cache.set(room_code, room_data)
 
     @staticmethod
     def check_winner(border, current_player):
