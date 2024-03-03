@@ -1,9 +1,7 @@
-import time
-
 from django.shortcuts import render, redirect, reverse
 from django.core.cache import cache
 from chat.views import chat
-from django.http import Http404, HttpResponseBadRequest
+from .game_logic import create_new_game
 import secrets
 import random
 
@@ -15,7 +13,6 @@ def find_game(request):
         'chat': chat_template.rendered_content,
         'user': request.user,
     }
-    print('niiga')
     return render(request, 'game/findGame.html', context)
 
 
@@ -27,27 +24,9 @@ def create_game(request):
     """
     room_code = str(secrets.token_hex(8)) + '.' + '0'
     # room_code = 'aboba'
-
-    room_data = {
-        'type': 'game.move',
-        'room_code': room_code,
-        'player1': request.user.username,
-        'player2': None,
-        'current_move': 'X',
-        'current_player': random.choice(['player1', 'player2']),
-        'border_to_render': [''] * 9,
-        'status': 'Wait for game',
-        'is_end': False,
-        'is_start': False,
-        'player1_time': 120,
-        'player2_time': 120,
-        'player1_rematch_request': False,
-        'player2_rematch_request': False,
-        'time_last_action': 0,
-    }
-
-    cache.set(
-        room_code, room_data
+    create_new_game(
+        room_code=room_code,
+        player1=request.user.username,
     )
     return redirect(reverse('game:game_lobby', kwargs={'room_code': room_code}))
 

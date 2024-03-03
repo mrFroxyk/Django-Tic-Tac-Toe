@@ -1,12 +1,16 @@
+import random
+import secrets
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.core.cache import cache
-from urllib.parse import parse_qs, urlencode
+from urllib.parse import parse_qs
 from django.urls import reverse
 import asyncio
-import random
 import json
 import time
 import httpx
+
+from .game_logic import *
 
 
 class GameLobby(AsyncWebsocketConsumer):
@@ -200,25 +204,14 @@ class Game(AsyncWebsocketConsumer):
                         old_room_code_body = room_code.split('.')[0]  # 'fjord12.2' -> fjord12
                         new_room_code = old_room_code_body + '.' + str(old_room_code_count + 1)
 
-                        new_room_data = {
-                            'type': 'game.move',
-                            'room_code': new_room_code,
-                            'player1': room_data['player1'],
-                            'player2': room_data['player2'],
-                            'current_move': 'X',
-                            'current_player': random.choice(['player1', 'player2']),
-                            'border_to_render': [''] * 9,
-                            'status': 'Wait for game',
-                            'is_end': False,
-                            'is_start': True,
-                            'player1_time': 120,
-                            'player2_time': 120,
-                            'player1_rematch_request': False,
-                            'player2_rematch_request': False,
-                            'time_last_action': int(time.time()),
-                        }
-                        new_room_data['status'] = f"{new_room_data[new_room_data['current_player']]} (X) is moving"
-                        cache.set(new_room_code, new_room_data)
+                        create_new_game(
+                            room_code=new_room_code,
+                            player1=room_data['player1'],
+                            player2=room_data['player2'],
+                            is_start=True,
+                            time_last_action=int(time.time()),
+                            set_game_status=True,
+                        )
 
                         await self.channel_layer.group_send(
                             room_code,
@@ -276,6 +269,10 @@ class Game(AsyncWebsocketConsumer):
 class FastGame(AsyncWebsocketConsumer):
     async def connect(self):
         # Adding a user to the queue for waiting for opponent
+        cache.set(
+            self.channel_name,
+            self.scope['user'].username
+        )
         async with httpx.AsyncClient() as client:
             data = {
                 'user_code': self.channel_name
@@ -287,12 +284,21 @@ class FastGame(AsyncWebsocketConsumer):
                 response_to_create_queue = await client.get('http://127.0.0.1:8001/queue')
                 if response_to_create_queue.status_code == 200:
                     user_codes = json.loads(response_to_create_queue.text).get('user_codes')
-                    # вынести создание игры в отдельную функцию, логический слой
-                    for code in user_codes:
+                    current_room_code = str(secrets.token_hex(8)) + '.' + '0'
+                    create_new_game(
+                        room_code=current_room_code,
+                        player1=cache.get(user_codes[0]),
+                        player2=cache.get(user_codes[1]),
+                        is_start=True,
+                        time_last_action=int(time.time()),
+                        set_game_status=True,
+                    )
+                    for channel_name_code in user_codes:
                         await self.channel_layer.send(
-                            code,
+                            channel_name_code,
                             {
-                                'type': 'search.redirect'
+                                'type': 'search.redirect',
+                                'relative_url': reverse('game:game', kwargs={'room_code': current_room_code})
                             }
                         )
         await self.accept()

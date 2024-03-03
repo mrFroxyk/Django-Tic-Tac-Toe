@@ -6,7 +6,13 @@ fastGameWS.onopen = function () {
         }
     ))
 }
-fastGameWS.onmessage = function (event){
+fastGameWS.onmessage = function (event) {
     const data = JSON.parse(event.data)
     console.log(data)
+    switch (data.type) {
+        case 'search.redirect':
+            const url =window.location.protocol + "//" + window.location.host + data.relative_url;
+            console.log(url)
+            window.location.href = url
+    }
 }
