@@ -13,7 +13,9 @@
         <form method="post" action="{% url 'my_auth:login' %}">
             {% csrf_token %}
             {{ form.as_p }}
+            <input type="hidden" value="{{ next }}" name="next">
             <button type="submit">Login</button>
+
         </form>
         <div>
             <a href="{% url 'my_auth:guest_login' %}">Log in as a guest</a>

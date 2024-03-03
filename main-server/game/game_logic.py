@@ -77,7 +77,7 @@ def create_new_game(
 channel_layer = get_channel_layer()
 
 
-async def check_game_end(second, room_code):
+async def check_game_end(second: int, room_code: str):
     await asyncio.sleep(second)
     room_data = cache.get(room_code)
     room_data['is_end'] = True
