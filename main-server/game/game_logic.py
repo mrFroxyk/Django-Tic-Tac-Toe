@@ -70,7 +70,7 @@ def create_new_game(
         room_code,
         room_data,
     )
-    asyncio.create_task(check_game_end(1 + 4, room_code=room_code))
+    asyncio.create_task(check_game_end(120, room_code=room_code))
     return
 
 
