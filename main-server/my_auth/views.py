@@ -13,6 +13,7 @@ IDManager = GlobalIDUserManager()
 def signup(request):
     if request.method == 'POST':
         form = RegisterUserForm(request.POST)
+        print(request.POST)
         if form.is_valid():
             form.save()
             return redirect(reverse('my_auth:login'))
@@ -32,7 +33,10 @@ def custom_login(request):
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
             login(request, user)
-            return redirect(next_url)
+            if next_url != 'None' and next_url != reverse('my_auth:logout'):
+                return redirect(next_url)
+            else:
+                return HttpResponse('Ты гееей')
     else:
         form = AuthForm()
 
@@ -52,7 +56,11 @@ def guest_login(request):
         guest_user = CustomUser.objects.create(username=guest_username, is_quest=True)
         request.session.set_expiry(86400)
         login(request, guest_user)
-        return HttpResponse(f'You were logged in under the nickname {request.user.username}')
+        next_url = request.GET.get('next')
+        if next_url != 'None' and next_url != reverse('my_auth:logout'):
+            return redirect(next_url)
+        else:
+            return HttpResponse(f'You were logged in under the nickname {request.user.username}')
 
 
 def logout_user(request):
