@@ -18,7 +18,7 @@
 
         </form>
         <div>
-            <a href="{% url 'my_auth:guest_login' %}">Log in as a guest</a>
+            <a href="{% url 'my_auth:guest_login' %}?next={{ next }}">Log in as a guest</a>
         </div>
         <div>
             <a href="{% url 'my_auth:signup' %}">Don't have an account?</a>

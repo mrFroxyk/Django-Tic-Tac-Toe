@@ -52,7 +52,11 @@ def guest_login(request):
         guest_user = CustomUser.objects.create(username=guest_username, is_quest=True)
         request.session.set_expiry(86400)
         login(request, guest_user)
-        return HttpResponse(f'You were logged in under the nickname {request.user.username}')
+        next_url = request.GET.get('next')
+        if next_url:
+            return redirect(next_url)
+        else:
+            return HttpResponse(f'You were logged in under the nickname {request.user.username}')
 
 
 def logout_user(request):
