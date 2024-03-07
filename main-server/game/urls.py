@@ -15,5 +15,5 @@ urlpatterns = [
 websocket_urlpatterns_game = [
     path('game_lobby', GameLobby.as_asgi(), name='ws_game_lobby'),
     path('game', Game.as_asgi(), name='ws_game'),
-    path('fast-game', FastGame.as_asgi(), name='ws_fast_game'),
+    path('fast-game', SearchGame.as_asgi(), name='ws_fast_game'),
 ]

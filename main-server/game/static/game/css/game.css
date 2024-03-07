@@ -91,6 +91,10 @@
     width: 175px;
     height: 175px;
     background: linear-gradient(180.00deg, rgba(0, 253, 255, 0.42), rgba(31, 202, 204, 0) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 45px;
 }
 
 .chat {

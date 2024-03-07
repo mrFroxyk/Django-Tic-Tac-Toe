@@ -124,82 +124,37 @@ class Game(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         if text_data:
             response = json.loads(text_data)
-            # print(response)
             room_code = response['room_code']
             match response['type']:
                 case 'move':
                     move_id = int(response['position'])
-                    room_data = cache.get(room_code)
                     username = self.scope['user'].username
-
-                    if (username != room_data[room_data['current_player']]) or (room_data['is_end']) or not (
-                            room_data['is_start']):
-                        return
-
-                    if username == room_data['player1']:
-                        enemy_user_num = 'player2'
-                    if username == room_data['player2']:
-                        enemy_user_num = 'player1'
-
-                    border_to_render = room_data['border_to_render']
-                    current_move = room_data['current_move']
-
-                    if border_to_render[move_id] == '':
-                        border_to_render[move_id] = current_move
-                        if self.check_winner(border_to_render, username):
-                            room_data['status'] = self.check_winner(border_to_render, username)
-                            room_data['is_end'] = True
-                            await self.channel_layer.group_send(
-                                room_code, room_data
-                            )
-
-                            await self.channel_layer.group_send(
-                                room_code,
-                                {
-                                    'type': 'game.end'
-                                }
-                            )
-                            cache.set(room_code, room_data)
-                            return
-
-                        room_data['current_player'] = enemy_user_num
-                        time_delta = int(time.time()) - room_data['time_last_action']
-                        room_data['time_last_action'] = int(time.time())
-
-                        match room_data['current_player']:
-                            case 'player1':
-                                room_data['player2_time'] -= time_delta
-                            case 'player2':
-                                room_data['player1_time'] -= time_delta
-
-                        if current_move == 'X':
-                            current_move = 'O'
-                        else:
-                            current_move = 'X'
-
-                        enemy_user_nick = room_data[enemy_user_num]
-                        room_data['status'] = f'{enemy_user_nick} ({current_move}) is moving now'
+                    room_data = make_move(room_code, move_id, username)
+                    if check_winner(room_data, username):
+                        status = check_winner(room_data, username)
+                        room_data = end_game(room_code, room_data, status)
                         await self.channel_layer.group_send(
                             room_code, room_data
                         )
+                        await self.channel_layer.group_send(
+                            room_code,
+                            {
+                                'type': 'game.end'
+                            }
+                        )
+                        return
+                    await self.channel_layer.group_send(
+                        room_code, room_data
+                    )
 
-                        room_data['current_move'] = current_move
-                        room_data['border_to_render'] = border_to_render
-
-                        cache.set(room_code, room_data)
                 case 'revenge_request':
-                    room_data = cache.get(room_code)
                     username = self.scope['user'].username
 
-                    if username == room_data['player1']:
-                        room_data['player1_rematch_request'] = True
-                    if username == room_data['player2']:
-                        room_data['player2_rematch_request'] = True
-                    cache.set(room_code, room_data)
+                    rematch_response = rematch_request(room_code, username)
+                    room_data = rematch_response.room_data
 
-                    if room_data['player1_rematch_request'] == room_data['player2_rematch_request'] == True:
+                    if rematch_response.accept_rematch:
                         # If both players agree, start a rematch.
-
                         old_room_code_count = int(room_code.split('.')[1])  # 'fjord12.2' -> 2
                         old_room_code_body = room_code.split('.')[0]  # 'fjord12.2' -> fjord12
                         new_room_code = old_room_code_body + '.' + str(old_room_code_count + 1)
@@ -244,50 +199,8 @@ class Game(AsyncWebsocketConsumer):
     async def game_redirect(self, event):
         await self.send(text_data=json.dumps(event))
 
-    async def check_end(self, second, room_code):
-        await asyncio.sleep(second)
-        print("In the future, a complete game checker will be available.")
-        room_data = cache.get(room_code)
-        room_data['is_end'] = True
-        room_data['status'] = 'Time is over'
-        # Correct the time of move if a connection occurs between moves
-        # time_delta = int(time.time()) - room_data['time_last_action']
-        # match room_data['current_player']:
-        #     case 'player1':
-        #         room_data['player2_time'] -= time_delta
-        #     case 'player2':
-        #         room_data['player1_time'] -= time_delta
-        print(room_data)
-        await self.channel_layer.group_send(
-            room_code, room_data
-        )
 
-        await self.channel_layer.group_send(
-            room_code,
-            {
-                'type': 'game.end'
-            }
-        )
-        cache.set(room_code, room_data)
-
-    @staticmethod
-    def check_winner(border, current_player):
-        win_position = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
-        ]
-        for (i1, i2, i3) in win_position:
-            if border[i1] == border[i2] == border[i3] and border[i1] != '':
-                return f'{current_player} ({border[i1]}) is win! Congratulation!'
-
-
-class FastGame(AsyncWebsocketConsumer):
+class SearchGame(AsyncWebsocketConsumer):
     async def connect(self):
         # Adding a user to the queue for waiting for opponent
         cache.set(

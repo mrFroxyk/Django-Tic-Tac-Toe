@@ -1,9 +1,9 @@
-import time
-
 from channels.layers import get_channel_layer
 from django.core.cache import cache
-import random
+from enum import Enum
 import asyncio
+import random
+import time
 
 
 def create_new_game(
@@ -100,3 +100,93 @@ async def check_game_end(second: int, room_code: str):
         }
     )
     cache.set(room_code, room_data)
+
+
+def make_move(room_code, move_id, username):
+    room_data = cache.get(room_code)
+
+    if (username != room_data[room_data['current_player']]) or (room_data['is_end']) or not (
+            room_data['is_start']):
+        return
+
+    if username == room_data['player1']:
+        enemy_user_num = 'player2'
+    if username == room_data['player2']:
+        enemy_user_num = 'player1'
+
+    border_to_render = room_data['border_to_render']
+    current_move = room_data['current_move']
+
+    if border_to_render[move_id] == '':
+        border_to_render[move_id] = current_move
+        room_data['current_player'] = enemy_user_num
+        time_delta = int(time.time()) - room_data['time_last_action']
+        room_data['time_last_action'] = int(time.time())
+
+        match room_data['current_player']:
+            case 'player1':
+                room_data['player2_time'] -= time_delta
+            case 'player2':
+                room_data['player1_time'] -= time_delta
+
+        if current_move == 'X':
+            current_move = 'O'
+        else:
+            current_move = 'X'
+
+        enemy_user_nick = room_data[enemy_user_num]
+        room_data['status'] = f'{enemy_user_nick} ({current_move}) is moving now'
+        response = room_data
+
+        room_data['current_move'] = current_move
+        room_data['border_to_render'] = border_to_render
+
+        cache.set(room_code, room_data)
+
+        return response
+
+
+def end_game(room_code, room_data, status):
+    room_data['status'] = status
+    room_data['is_end'] = True
+    cache.set(room_code, room_data)
+    return room_data
+
+
+def check_winner(room_data, current_player):
+    border = room_data['border_to_render']
+    win_position = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+    ]
+    for (i1, i2, i3) in win_position:
+        if border[i1] == border[i2] == border[i3] and border[i1] != '':
+            return f'{current_player} ({border[i1]}) is win! Congratulation!'
+
+
+class RematchResponse:
+    def __init__(self, accept_rematch, room_data):
+        self.accept_rematch = accept_rematch
+        self.room_data = room_data
+
+
+def rematch_request(room_code, username):
+    room_data = cache.get(room_code)
+    if username == room_data['player1']:
+        room_data['player1_rematch_request'] = True
+    if username == room_data['player2']:
+        room_data['player2_rematch_request'] = True
+    cache.set(room_code, room_data)
+
+    if room_data['player1_rematch_request'] == room_data['player2_rematch_request'] == True:
+        accept_rematch = True
+    else:
+        accept_rematch = False
+
+    return RematchResponse(accept_rematch, room_data)
