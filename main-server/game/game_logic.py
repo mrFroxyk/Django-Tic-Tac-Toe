@@ -107,7 +107,7 @@ def make_move(room_code, move_id, username):
 
     if (username != room_data[room_data['current_player']]) or (room_data['is_end']) or not (
             room_data['is_start']):
-        return
+        return room_data
 
     if username == room_data['player1']:
         enemy_user_num = 'player2'
