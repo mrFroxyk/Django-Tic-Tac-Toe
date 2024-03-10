@@ -1,0 +1,2 @@
+
+celery -A Core worker --loglevel=info

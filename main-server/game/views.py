@@ -5,8 +5,11 @@ from .game_logic import create_new_game
 import secrets
 import random
 
+from Core.celery import check_game_end, print_ms
+
 
 def find_game(request):
+    print_ms.delay()
     chat_template = chat(request)
     chat_template.render()
     context = {

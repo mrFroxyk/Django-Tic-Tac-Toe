@@ -76,19 +76,8 @@ TEMPLATES = [
 # WSGI_APPLICATION = 'Core.wsgi.application'
 ASGI_APPLICATION = 'Core.asgi.application'
 
-# CHANNEL_LAYERS = {
-#     'default': {
-#         'BACKEND': 'channels.layers.InMemoryChannelLayer',
-#     }
-# }
-
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-#         'LOCATION': 'unique-snowflake',
-#         'TIMEOUT': None,
-#     }
-# }
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/2"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/2"
 
 CHANNEL_LAYERS = {
     'default': {

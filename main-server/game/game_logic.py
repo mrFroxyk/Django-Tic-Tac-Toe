@@ -4,6 +4,7 @@ from enum import Enum
 import asyncio
 import random
 import time
+from Core.celery import check_game_end, print_ms
 
 
 def create_new_game(
@@ -70,36 +71,15 @@ def create_new_game(
         room_code,
         room_data,
     )
+    # print_ms.delay()
     # asyncio.create_task(check_game_end(120, room_code=room_code))
+    # check_game_end
+    # task = check_game_end.apply_async(args=[room_code], countdown=2)
+
     return
 
 
 channel_layer = get_channel_layer()
-
-
-async def check_game_end(second: int, room_code: str):
-    await asyncio.sleep(second)
-    room_data = cache.get(room_code)
-    room_data['is_end'] = True
-    room_data['status'] = 'Time is over'
-    # Correct the time of move if a connection occurs between moves
-    time_delta = int(time.time()) - room_data['time_last_action']
-    match room_data['current_player']:
-        case 'player1':
-            room_data['player1_time'] -= time_delta
-        case 'player2':
-            room_data['player2_time'] -= time_delta
-    await channel_layer.group_send(
-        room_code, room_data
-    )
-
-    await channel_layer.group_send(
-        room_code,
-        {
-            'type': 'game.end'
-        }
-    )
-    cache.set(room_code, room_data)
 
 
 def make_move(room_code, move_id, username):
