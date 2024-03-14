@@ -91,7 +91,7 @@ CHANNEL_LAYERS = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',  # Здесь указывается адрес и порт Redis, а также номер базы данных (1)
+        'LOCATION': 'redis://127.0.0.1:6379/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         },
@@ -104,9 +104,13 @@ CACHES = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-
+        'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': 'django-ws',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -114,18 +118,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 # AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
+#   {
+#     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#   },
+#   {
+#     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#   },
+#   {
+#     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#   },
+#   {
+#     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#   },
 # ]
 
 # Internationalization
@@ -157,20 +161,20 @@ AUTH_USER_MODEL = 'my_auth.CustomUser'
 # # DELETE IT
 # from django.core.cache import cache
 #
-# room_code = 'aboba'  # DELETE IT
+# room_code = 'aboba' # DELETE IT
 # cache.set(
-#     room_code, {
-#         'type': 'game.move',
-#         'player1': 'admin',
-#         'player2': 'guest_25',
-#         'current_move': 'X',
-#         'current_player': 'player1',
-#         'border_to_render': [''] * 9,
-#         'status': 'wait for game',
-#         'is_end': False,
-#         'is_start': False,
-#         'player1_time': 120,
-#         'player2_time': 120,
-#         'time_last_action': 0,
-#     }
+#   room_code, {
+#     'type': 'game.move',
+#     'player1': 'admin',
+#     'player2': 'guest_25',
+#     'current_move': 'X',
+#     'current_player': 'player1',
+#     'border_to_render': [''] * 9,
+#     'status': 'wait for game',
+#     'is_end': False,
+#     'is_start': False,
+#     'player1_time': 120,
+#     'player2_time': 120,
+#     'time_last_action': 0,
+#   }
 # )
