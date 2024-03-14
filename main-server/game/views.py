@@ -4,6 +4,7 @@ from chat.views import chat
 from .game_logic import create_new_game
 import secrets
 import random
+from asgiref.sync import sync_to_async
 
 from Core.celery import check_game_end, print_ms
 
@@ -19,17 +20,17 @@ def find_game(request):
     return render(request, 'game/findGame.html', context)
 
 
-def create_game(request):
+async def create_game(request):
     """
     Middle function, who create game session in the cache and
     redirected user to '/game/{room_code}/game'. He waits for second player after
     the game there
     """
     room_code = str(secrets.token_hex(8)) + '.' + '0'
-    # room_code = 'aboba'
+    user = await request.auser()
     create_new_game(
         room_code=room_code,
-        player1=request.user.username,
+        player1=user.username,
     )
     return redirect(reverse('game:game_lobby', kwargs={'room_code': room_code}))
 
