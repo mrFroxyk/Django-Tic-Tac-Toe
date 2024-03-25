@@ -1,0 +1,91 @@
+.nav {
+    height: 80px;
+    width: 100%;
+    background: linear-gradient(270deg, rgba(230, 185, 57, 0.71) 12.382%, rgb(103, 46, 212) 90.045%);
+    display: grid;
+    grid-template-columns: 1fr 7fr 2fr;
+    align-items: center;
+}
+
+.nav__logo {
+    width: 55px;
+    height: 55px;
+    margin: 0 3%;
+}
+
+.nav__bar {
+    margin: 0 10%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.nav__menu-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5%;
+    height: 100%;
+}
+
+.nav__menu-item:hover {
+    -webkit-box-shadow: 13px 8px 15px 8px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 13px 8px 15px 8px rgba(34, 60, 80, 0.2);
+    box-shadow: 13px 8px 15px 8px rgba(34, 60, 80, 0.2);
+    border: rgba(163, 187, 187, 0.32);
+    color: rgba(114, 35, 168, 0.82);
+}
+
+.user {
+    height: 90%;
+    width: 90%;
+    /*background: rgb(255, 255, 255);*/
+    border-radius: 20px;
+    background: rgb(12, 12, 12);
+    display: flex;
+    align-items: center;
+}
+
+.user__ava {
+    background: rgb(255, 255, 255);
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    margin: 0 3%;
+}
+
+.user__nickname {
+    color: aliceblue;
+    font-weight: 200;
+    font-family: "Dosis";
+}
+
+.content {
+    min-height: 100%;
+}
+
+.footer {
+    background: black;
+    min-height: 200px;
+}
+
+@media (max-width: 810px) {
+    .nav {
+        height: 200px;
+        width: 100%;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 2fr;
+        align-items: center;
+    }
+
+    .nav__bar {
+        margin: 0 10%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+        grid-row-start: 2;
+        grid-column-start: 1;
+        grid-column-end: 3;
+    }
+}
