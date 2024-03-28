@@ -1,0 +1,18 @@
+.content {
+    /* background-image: url("{% static 'game/img/fon.png' %}"); */
+    /* background-color: blueviolet; */
+    background-size: cover;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.game-status {
+    color: white;
+    height: 100px;
+    width: 549px;
+    background-color: #1D181F;
+    border-radius: 15px 0 15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

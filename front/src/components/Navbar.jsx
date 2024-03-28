@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import '../styles/Navbar.css'
-import '../img/logo.png'
+// import Logo from '../img/logo.png'
 
-const Navbar = function navBar() {
+const Navbar = function() {
     return (
         <nav className="nav">
-            <img src="./img/logo.png" alt="" className="nav__logo" />
+            <img src="/img/logo.png" alt="" className="nav__logo" />
             <ul className="nav__bar">
                 <li className="nav__menu-item">
                     <Link to="/1" >Local game</Link>
